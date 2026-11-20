@@ -1,0 +1,9 @@
+{
+  "short_name": "L'Éclat Maîtrisé",
+  "name": "L'Éclat Maîtrisé – Excellence opérationnelle dans la joaillerie",
+  "icons": [{ "src": "/favicon.svg", "type": "image/svg+xml", "sizes": "any" }],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#0a0a0c",
+  "background_color": "#0a0a0c"
+}
