@@ -1,6 +1,8 @@
 # L'Éclat Maîtrisé
 
 Podcast « Excellence opérationnelle dans la joaillerie », par Christophe Fournier.
+En ligne : https://eclat-maitrise.vercel.app (déploiement automatique à chaque push sur `main`).
+
 Série sœur de [Le Temps Maîtrisé](https://opex-five.vercel.app/) (React + Vite, déployé sur Vercel).
 
 ## Démarrer
