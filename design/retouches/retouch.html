@@ -9,6 +9,7 @@
 // Usage : retouch.html?ep=N  → rendu à capturer avec Chrome headless.
 //
 // Toutes les images : suppression du titre « L'ÉCLAT MAÎTRISÉ ».
+// Épisode 1 : « JOAILLERIE & LEAN MANAGEMENT » remonté en titre.
 // Épisodes 2 à 4 : suppression de « JOAILLERIE & LEAN MANAGEMENT », de la ligne
 // « ÉPISODE N » et du thème, puis thème réécrit en haut, en taille de titre.
 // Épisode 2 : corrections de texte (doublon Jidoka, faute sur le carnet).
@@ -17,7 +18,7 @@ const EP = Number(new URLSearchParams(location.search).get('ep'));
 
 // Zones à effacer [x0, y0, x1, y1] (coordonnées de l'original 2048 px)
 const ERASE = {
-  1: [[432, 88, 1622, 250]],
+  1: [[432, 88, 1622, 250], [440, 250, 1620, 322]],
   2: [[432, 88, 1622, 250], [450, 250, 1620, 320, 'top'], [850, 320, 1200, 421, 'top'], [500, 421, 1555, 496, 'top']],
   3: [[400, 70, 1650, 250], [178, 236, 1870, 334], [560, 320, 1510, 421, 'top'], [690, 421, 1360, 496, 'top']],
   4: [[400, 70, 1650, 250], [178, 236, 1870, 334], [560, 320, 1510, 421, 'top'], [735, 421, 1315, 496, 'top']],
@@ -25,6 +26,7 @@ const ERASE = {
 
 // Thème réécrit en haut, en taille de titre : lignes, centres verticaux, largeur max
 const TITLE = {
+  1: { lines: ['JOAILLERIE &', 'LEAN MANAGEMENT'], y: [175, 300], maxWidth: 1150, maxSize: 118 },
   2: { lines: ['L’EXCELLENCE', 'OPÉRATIONNELLE'], y: [175, 300], maxWidth: 1150, maxSize: 118 },
   3: { lines: ['LES 7 GASPILLAGES'], y: [185], maxWidth: 1220, maxSize: 132 },
   4: { lines: ['LE 5S À L’ÉTABLI'], y: [185], maxWidth: 1220, maxSize: 132 },
