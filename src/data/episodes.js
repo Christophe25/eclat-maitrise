@@ -41,6 +41,7 @@ export const episodes = [
     episodeNumber: 3,
     title: 'Épisode 3 – Les 7 gaspillages à l’atelier',
     shortTitle: 'Les 7 mudas',
+    image: '/infographics/ep-3.jpg',
     plannedDuration: '13 min',
     description:
       "Pièces qui attendent leurs pierres, sertis repris, polissage au-delà du besoin, or immobilisé en stock… Les 7 mudas traduits dans la langue de l'établi, et comment l'œil du joaillier apprend à les voir.",
