@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Play, Pause, X, FileQuestion, Lock, LockOpen, Clock } from 'lucide-react';
+import { Play, Pause, X, FileQuestion, Check, Clock } from 'lucide-react';
 import { Quiz } from './Quiz';
 import { Diamond } from './Diamond';
 
@@ -18,8 +18,8 @@ export function Fiche({ episode, isPlaying, isListened, onPlay, onToggleListened
   }, [onClose]);
 
   const label = typeof episode.episodeNumber === 'number'
-    ? `Pièce N° ${String(episode.episodeNumber).padStart(2, '0')}`
-    : 'Pièce rare';
+    ? `Épisode ${episode.episodeNumber}`
+    : 'Épisode bonus';
 
   return (
     <div className="fiche-overlay" onClick={onClose}>
@@ -64,14 +64,14 @@ export function Fiche({ episode, isPlaying, isListened, onPlay, onToggleListened
                 {isPlaying ? 'Pause' : 'Écouter'}
               </button>
             ) : (
-              <span className="fiche-soon">Bientôt présentée</span>
+              <span className="fiche-soon">À paraître</span>
             )}
             <button className={`ghost-btn ${showQuiz ? 'ghost-btn--on' : ''}`} onClick={() => setShowQuiz(v => !v)}>
               <FileQuestion size={17} /> Quiz
             </button>
             <button className={`ghost-btn ${isListened ? 'ghost-btn--on' : ''}`} onClick={() => onToggleListened(episode.id)}>
-              {isListened ? <Lock size={17} /> : <LockOpen size={17} />}
-              {isListened ? 'Au coffre' : 'Mettre au coffre'}
+              <Check size={17} />
+              {isListened ? 'Écouté' : 'Marquer comme écouté'}
             </button>
           </div>
 

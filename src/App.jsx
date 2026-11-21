@@ -1,12 +1,12 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback, useMemo, Fragment } from 'react';
 import { episodes, bonusEpisodes, podcastMeta } from './data';
-import { Piece } from './components/Piece';
+import { Tile } from './components/Tile';
 import { Fiche } from './components/Fiche';
 import { AudioPlayer } from './components/AudioPlayer';
-import { ExternalLink } from 'lucide-react';
+import { ExternalLink, LayoutGrid, List } from 'lucide-react';
 import { QRCodeSVG } from 'qrcode.react';
 import { Analytics } from '@vercel/analytics/react';
-import './salon.css';
+import './maison.css';
 
 const STORAGE_KEY = 'eclat_read_ids';
 
@@ -18,14 +18,25 @@ function loadReadIds() {
   }
 }
 
-const VITRINES = [
-  { id: 'collection', label: 'La collection' },
-  { id: 'rares', label: 'Pièces rares' },
-  { id: 'coffre', label: 'Le coffre' },
+const VITRINES = {
+  collection: { label: 'La collection', title: 'Toute la collection', intro: podcastMeta.description },
+  rares: { label: 'Épisodes bonus', title: 'Épisodes bonus', intro: 'QRQC, 8D, PDCA, SMED : quatre outils de la qualité, appliqués pas à pas à un atelier de joaillerie.' },
+  coffre: { label: 'Mes écoutes', title: 'Mes écoutes', intro: 'Les épisodes que vous avez déjà écoutés, gardés de côté.' },
+};
+
+const SORTS = [
+  { id: 'ordre', label: 'Ordre de diffusion' },
+  { id: 'court', label: 'Durée croissante' },
+  { id: 'long', label: 'Durée décroissante' },
 ];
+
+const minutes = (ep) => parseInt(String(ep.duration).replace(/\D+/g, ''), 10) || 0;
 
 function App() {
   const [vitrine, setVitrine] = useState('collection');
+  const [sort, setSort] = useState('ordre');
+  const [filters, setFilters] = useState({ dispo: false, bientot: false });
+  const [view, setView] = useState('grille');
   const [readIds, setReadIds] = useState(loadReadIds);
   const [opened, setOpened] = useState(null);
   const [currentPodcast, setCurrentPodcast] = useState(null);
@@ -39,14 +50,23 @@ function App() {
   const toggleRead = (id) =>
     setReadIds(prev => (prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]));
 
-  const all = [...episodes, ...bonusEpisodes];
-  const displayed = vitrine === 'collection' ? episodes
-    : vitrine === 'rares' ? bonusEpisodes
-      : all.filter(p => readIds.includes(p.id));
+  const published = episodes.filter(e => e.audioUrl);
+  const latest = published[published.length - 1];
 
-  const playable = (bonusEpisodes.some(b => b.id === currentPodcast?.id) ? bonusEpisodes : episodes)
-    .filter(p => p.audioUrl);
-  const presentedCount = episodes.filter(p => p.audioUrl).length;
+  const displayed = useMemo(() => {
+    let list = vitrine === 'collection' ? episodes
+      : vitrine === 'rares' ? bonusEpisodes
+        : [...episodes, ...bonusEpisodes].filter(p => readIds.includes(p.id));
+    if (filters.dispo && !filters.bientot) list = list.filter(e => e.audioUrl);
+    if (filters.bientot && !filters.dispo) list = list.filter(e => !e.audioUrl);
+    if (sort === 'court') list = [...list].sort((a, b) => minutes(a) - minutes(b));
+    if (sort === 'long') list = [...list].sort((a, b) => minutes(b) - minutes(a));
+    return list;
+  }, [vitrine, filters, sort, readIds]);
+
+  const badgeFor = (ep) => (ep.id === latest?.id ? 'Nouveauté' : ep.episodeNumber === 1 ? 'Essentiel' : null);
+
+  const playable = (bonusEpisodes.some(b => b.id === currentPodcast?.id) ? bonusEpisodes : episodes).filter(p => p.audioUrl);
 
   const handlePlay = (podcast) => {
     if (currentPodcast?.id === podcast.id) {
@@ -73,9 +93,12 @@ function App() {
   };
 
   const closeFiche = useCallback(() => setOpened(null), []);
+  const v = VITRINES[vitrine];
+  // L'encart éditorial s'intercale après la 4e vignette, dans la collection seulement
+  const showEditorial = vitrine === 'collection' && view === 'grille' && sort === 'ordre' && latest && displayed.length > 4;
 
   return (
-    <div className="salon">
+    <div className="maison">
       <audio
         ref={audioRef}
         onEnded={() => { setIsPlaying(false); step(1); }}
@@ -83,74 +106,110 @@ function App() {
         onPlay={() => setIsPlaying(true)}
       />
 
-      <header className="salon-entree">
-        <div className="salon-boiseries" aria-hidden="true" />
-        <div className="salon-lustre" aria-hidden="true" />
+      {latest && (
+        <button type="button" className="m-annonce" onClick={() => setOpened(latest)}>
+          Nouvel épisode · {latest.shortTitle} — à écouter maintenant
+        </button>
+      )}
 
-        <nav className="salon-nav">
-          <span className="salon-signature">{podcastMeta.author}</span>
-          <a href={podcastMeta.sisterSeries.url} target="_blank" rel="noreferrer">
-            <ExternalLink size={14} /> {podcastMeta.sisterSeries.title}
-          </a>
-        </nav>
-
-        <div className="plaque">
-          <span className="plaque-vis" aria-hidden="true" />
-          <h1>{podcastMeta.title}</h1>
-          <p>{podcastMeta.tagline}</p>
-          <span className="plaque-vis plaque-vis--r" aria-hidden="true" />
-        </div>
-
-        <p className="salon-accroche">{podcastMeta.description}</p>
-
-        <div className="salon-registre">
-          <span><strong>{presentedCount}</strong> pièces présentées</span>
-          <span className="salon-sep">·</span>
-          <span><strong>{episodes.length}</strong> au catalogue</span>
-          <span className="salon-qr" title="Scanner pour partager">
-            <QRCodeSVG value={window.location.href} size={44} bgColor="transparent" fgColor="#d9b46a" />
+      <header className="m-header">
+        <div className="m-header-row">
+          <span className="m-header-side">{podcastMeta.author}</span>
+          <span className="m-wordmark">{podcastMeta.title}</span>
+          <span className="m-header-side m-header-side--right">
+            <a href={podcastMeta.sisterSeries.url} target="_blank" rel="noreferrer">
+              {podcastMeta.sisterSeries.title} <ExternalLink size={12} />
+            </a>
           </span>
         </div>
-      </header>
-
-      <main className="salon-main">
-        <div className="vitrines" role="tablist" aria-label="Vitrines">
-          {VITRINES.map(v => (
-            <button
-              key={v.id}
-              role="tab"
-              aria-selected={vitrine === v.id}
-              className={`vitrine-tab ${vitrine === v.id ? 'vitrine-tab--on' : ''}`}
-              onClick={() => setVitrine(v.id)}
-            >
-              {v.label}
-              {v.id === 'coffre' && readIds.length > 0 && <span className="vitrine-count">{readIds.length}</span>}
+        <nav className="m-nav" aria-label="Rubriques">
+          {Object.entries(VITRINES).map(([id, item]) => (
+            <button key={id} className={vitrine === id ? 'on' : ''} onClick={() => setVitrine(id)}>
+              {item.label}{id === 'coffre' && readIds.length > 0 ? ` (${readIds.length})` : ''}
             </button>
           ))}
-        </div>
+        </nav>
+      </header>
 
-        <section className="plateau" aria-label="Plateau de présentation">
-          <div className="plateau-velours">
-            {displayed.length > 0 ? (
-              <div className="plateau-grille">
-                {displayed.map(ep => (
-                  <Piece
-                    key={ep.id}
+      <section className="m-hero">
+        <div className="m-hero-visual">
+          {latest && <img src={(vitrine === 'collection' ? episodes[0] : latest).image} alt="" />}
+        </div>
+        <div className="m-hero-text">
+          <h1>{v.title}</h1>
+          <p>{v.intro}</p>
+          <span className="m-hero-qr" title="Scanner pour partager">
+            <QRCodeSVG value={window.location.href} size={56} bgColor="transparent" fgColor="#1c1a17" />
+            <small>Scanner pour partager</small>
+          </span>
+        </div>
+      </section>
+
+      <div className="m-crumb">Podcast <span>/</span> {v.title}</div>
+
+      <div className="m-layout">
+        <aside className="m-filters" aria-label="Trier et filtrer">
+          <h2>Trier par</h2>
+          {SORTS.map(s => (
+            <label key={s.id} className="m-radio">
+              <input type="radio" name="tri" checked={sort === s.id} onChange={() => setSort(s.id)} />
+              <span>{s.label}</span>
+            </label>
+          ))}
+          <hr />
+          <h2>Filtrer par</h2>
+          <label className="m-check">
+            <input type="checkbox" checked={filters.dispo} onChange={e => setFilters(f => ({ ...f, dispo: e.target.checked }))} />
+            <span>Disponible à l'écoute</span>
+          </label>
+          <label className="m-check">
+            <input type="checkbox" checked={filters.bientot} onChange={e => setFilters(f => ({ ...f, bientot: e.target.checked }))} />
+            <span>À paraître</span>
+          </label>
+        </aside>
+
+        <div className="m-results">
+          <div className="m-results-bar">
+            <span className="m-count">{displayed.length} épisode{displayed.length > 1 ? 's' : ''}</span>
+            <span className="m-views">
+              <button className={view === 'grille' ? 'on' : ''} onClick={() => setView('grille')}>Grille <LayoutGrid size={13} /></button>
+              <button className={view === 'liste' ? 'on' : ''} onClick={() => setView('liste')}>Liste <List size={13} /></button>
+            </span>
+          </div>
+
+          {displayed.length === 0 ? (
+            <p className="m-empty">Aucun épisode ici pour l'instant.</p>
+          ) : (
+            <div className={view === 'grille' ? 'm-grid' : 'm-list'}>
+              {displayed.map((ep, i) => (
+                <Fragment key={ep.id}>
+                  <Tile
                     episode={ep}
+                    badge={badgeFor(ep)}
                     isListened={readIds.includes(ep.id)}
                     isPlaying={currentPodcast?.id === ep.id && isPlaying}
                     onOpen={setOpened}
                   />
-                ))}
-              </div>
-            ) : (
-              <p className="plateau-vide">
-                Le coffre est vide. Ouvrez une pièce et choisissez « Mettre au coffre » une fois l'épisode écouté.
-              </p>
-            )}
-          </div>
-        </section>
-      </main>
+                  {showEditorial && i === 3 && (
+                    <button type="button" className="m-editorial" onClick={() => setOpened(latest)}>
+                      <img src={latest.image} alt="" />
+                      <span className="m-editorial-text">
+                        <small>Dernier épisode</small>
+                        <strong>{latest.shortTitle}</strong>
+                        <em>Découvrir</em>
+                      </span>
+                    </button>
+                  )}
+                </Fragment>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+
+      <footer className="m-footer">
+        {podcastMeta.title} · {podcastMeta.tagline} · {podcastMeta.author}
+      </footer>
 
       {opened && (
         <Fiche
