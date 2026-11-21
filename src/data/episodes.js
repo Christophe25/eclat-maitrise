@@ -1,6 +1,6 @@
 // Contenu éditorial de la série « L'Éclat Maîtrisé ».
-// Les champs audio (audioUrl, duration, date, link) sont complétés automatiquement
-// par `npm run sync` à partir du flux RSS Ausha (voir scripts/sync-podcasts.cjs).
+// Les champs audio (audioUrl, duration, date) viennent de src/data/audio.json,
+// alimenté par `npm run publish` (voir scripts/publish-episode.sh).
 
 export const podcastMeta = {
   title: "L'Éclat Maîtrisé",
@@ -19,6 +19,7 @@ export const episodes = [
     episodeNumber: 1,
     title: "Épisode 1 – L'héritage joaillier",
     shortTitle: "L'héritage joaillier",
+    image: '/infographics/ep-1.png',
     plannedDuration: '14 min',
     description:
       "De l'orfèvre de la Renaissance aux grandes maisons de haute joaillerie : comment une exigence de précision au centième de carat a façonné une culture du zéro défaut, terrain naturel pour l'excellence opérationnelle.",

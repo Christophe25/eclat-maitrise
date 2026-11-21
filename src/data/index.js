@@ -1,7 +1,7 @@
 import { podcastMeta, episodes as rawEpisodes, bonusEpisodes as rawBonus } from './episodes';
 import audio from './audio.json';
 
-// Fusionne le contenu éditorial avec les données audio synchronisées depuis Ausha.
+// Fusionne le contenu éditorial avec les données audio publiées sur le VPS (audio.json).
 const withAudio = (ep) => {
   const a = audio[ep.id] || {};
   return {
@@ -10,7 +10,7 @@ const withAudio = (ep) => {
     duration: a.duration || ep.plannedDuration,
     date: a.date || null,
     link: a.link || null,
-    image: a.image || null,
+    image: a.image || ep.image || null,
   };
 };
 

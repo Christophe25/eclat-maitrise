@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root { --gold: #e3c48c; --gold-dim: rgba(227,196,140,.55); --ice: #c9dbe8; --muted: #9a9aa6; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 1080px; height: 1080px; background: #0a0a0c; }
+  .poster {
+    position: relative; width: 1080px; height: 1080px; overflow: hidden;
+    font-family: 'Outfit', sans-serif; color: #fff;
+    background:
+      radial-gradient(ellipse 55% 40% at 50% 8%, rgba(227,196,140,.14), transparent 70%),
+      radial-gradient(ellipse 40% 30% at 85% 95%, rgba(201,219,232,.07), transparent 70%),
+      linear-gradient(170deg, #141418 0%, #0a0a0c 60%);
+  }
+  .frame { position: absolute; inset: 22px; border: 1px solid rgba(227,196,140,.28); border-radius: 18px; }
+  .frame::after { content: ''; position: absolute; inset: 8px; border: 1px solid rgba(227,196,140,.10); border-radius: 12px; }
+
+  header { position: absolute; top: 58px; left: 0; right: 0; text-align: center; }
+  .kicker { font-size: 17px; letter-spacing: .32em; text-transform: uppercase; color: var(--muted); }
+  .kicker b { color: var(--gold); font-weight: 600; }
+  h1 {
+    font-family: 'Cormorant Garamond', serif; font-weight: 600; font-size: 84px; line-height: 1; margin-top: 14px;
+    background: linear-gradient(120deg, #fff 10%, var(--ice) 45%, var(--gold) 85%);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .lede { margin-top: 14px; font-size: 21px; color: #c8c8d0; font-weight: 300; }
+  .lede em { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 25px; color: var(--gold); }
+
+  .cols { position: absolute; top: 268px; left: 86px; right: 86px; display: grid; grid-template-columns: 1fr 250px;
+          font-size: 13px; letter-spacing: .28em; text-transform: uppercase; color: var(--muted); }
+  .cols span:last-child { text-align: left; padding-left: 26px; }
+
+  .timeline { position: absolute; top: 300px; left: 86px; right: 86px; }
+  .spine { position: absolute; left: 39px; top: 40px; bottom: 40px; width: 1px;
+           background: linear-gradient(var(--gold-dim), rgba(227,196,140,.15)); }
+  .row { position: relative; display: grid; grid-template-columns: 80px 1fr 250px; align-items: center;
+         height: 116px; border-bottom: 1px solid rgba(255,255,255,.06); }
+  .row:last-child { border-bottom: none; }
+  .icon { width: 80px; height: 80px; border-radius: 50%; display: grid; place-items: center; position: relative;
+          background: radial-gradient(circle at 35% 30%, #1d1d23, #0d0d10); border: 1px solid var(--gold-dim);
+          box-shadow: 0 0 22px rgba(227,196,140,.18); }
+  .icon svg { width: 42px; height: 42px; stroke: var(--gold); fill: none; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+  .text { padding-left: 28px; }
+  .era { font-size: 14px; letter-spacing: .22em; text-transform: uppercase; color: var(--ice); }
+  .title { font-family: 'Cormorant Garamond', serif; font-weight: 600; font-size: 32px; line-height: 1.05; color: var(--gold); margin-top: 3px; }
+  .desc { font-size: 16.5px; color: #b9b9c3; font-weight: 300; margin-top: 4px; }
+  .lesson { border-left: 1px solid rgba(227,196,140,.35); padding-left: 26px; height: 74px; display: flex; flex-direction: column; justify-content: center; }
+  .lesson b { font-size: 21px; font-weight: 600; color: #fff; }
+  .lesson small { font-size: 15px; color: var(--muted); margin-top: 3px; }
+
+  footer { position: absolute; left: 86px; right: 86px; bottom: 62px; text-align: center; }
+  .rule { display: flex; align-items: center; gap: 18px; color: var(--gold); }
+  .rule::before, .rule::after { content: ''; flex: 1; height: 1px; background: linear-gradient(90deg, transparent, var(--gold-dim), transparent); }
+  .rule svg { width: 34px; stroke: var(--gold); fill: none; stroke-width: 1.4; }
+  .pillars { margin-top: 16px; display: flex; justify-content: center; gap: 30px;
+             font-family: 'Cormorant Garamond', serif; font-size: 29px; font-weight: 600; color: #fff; }
+  .pillars i { color: var(--gold); font-style: normal; }
+  .sig { margin-top: 10px; font-size: 14px; letter-spacing: .2em; text-transform: uppercase; color: var(--muted); }
+</style>
+</head>
+<body>
+<div class="poster">
+  <div class="frame"></div>
+
+  <header>
+    <div class="kicker"><b>L'Éclat Maîtrisé</b> · Épisode 1</div>
+    <h1>L'héritage joaillier</h1>
+    <p class="lede">Cinq repères pour une même exigence : <em>le zéro défaut avant l'heure</em></p>
+  </header>
+
+  <div class="cols"><span>L'héritage</span><span>Le principe qualité</span></div>
+
+  <div class="timeline">
+    <div class="spine"></div>
+
+    <div class="row">
+      <div class="icon"><svg viewBox="0 0 48 48"><path d="M24 6c-6 8-9 15-9 22a9 9 0 0 0 18 0c0-7-3-14-9-22z"/><path d="M24 14v26"/><circle cx="24" cy="30" r="3"/></svg></div>
+      <div class="text"><div class="era">Antiquité</div><div class="title">De la caroube au carat</div><div class="desc">Une graine sert d'étalon ; le carat métrique vaut 0,2 g.</div></div>
+      <div class="lesson"><b>Mesurer</b><small>Un étalon partagé</small></div>
+    </div>
+
+    <div class="row">
+      <div class="icon"><svg viewBox="0 0 48 48"><path d="M17 6h14v10H17z"/><path d="M20 16v10M28 16v10"/><path d="M12 26h24v6H12z"/><path d="M18 32l-2 10h16l-2-10"/></svg></div>
+      <div class="text"><div class="era">Moyen Âge</div><div class="title">Le poinçon de maître</div><div class="desc">Chaque pièce porte la marque de son orfèvre.</div></div>
+      <div class="lesson"><b>Tracer</b><small>Responsabilité de l'auteur</small></div>
+    </div>
+
+    <div class="row">
+      <div class="icon"><svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="16"/><circle cx="24" cy="24" r="12" opacity=".5"/><path d="M24 14v10l7 5"/><path d="M24 4v4M24 40v4"/></svg></div>
+      <div class="text"><div class="era">XVI<sup>e</sup> siècle · Genève</div><div class="title">De l'orfèvrerie à l'horlogerie</div><div class="desc">Le savoir-faire des orfèvres passe à la montre.</div></div>
+      <div class="lesson"><b>Transmettre</b><small>Le geste survit au contexte</small></div>
+    </div>
+
+    <div class="row">
+      <div class="icon"><svg viewBox="0 0 48 48"><path d="M8 42h32M10 42V22M18 42V22M30 42V22M38 42V22"/><path d="M6 22h36L24 8z"/></svg></div>
+      <div class="text"><div class="era">1893 · Paris</div><div class="title">La place Vendôme</div><div class="desc">Boucheron ouvre la voie aux grandes maisons.</div></div>
+      <div class="lesson"><b>Servir</b><small>L'exigence du client</small></div>
+    </div>
+
+    <div class="row">
+      <div class="icon"><svg viewBox="0 0 48 48"><path d="M16 10h16l10 10-18 20L6 20z"/><path d="M6 20h36"/><path d="M16 10l4 10 4-10 4 10 4-10" opacity=".7"/><path d="M20 20l4 20 4-20" opacity=".5"/></svg></div>
+      <div class="text"><div class="era">1919</div><div class="title">La taille brillant</div><div class="desc">Tolkowsky calcule les proportions de l'éclat.</div></div>
+      <div class="lesson"><b>Standardiser</b><small>Le beau devient mesurable</small></div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="rule"><svg viewBox="0 0 48 36"><path d="M14 2h20l12 12-22 20L2 14z"/><path d="M2 14h44"/></svg></div>
+    <div class="pillars"><span>Zéro défaut</span><i>·</i><span>Respect de la matière</span><i>·</i><span>Transmission du geste</span></div>
+    <div class="sig">Christophe Fournier · Excellence opérationnelle en joaillerie</div>
+  </footer>
+</div>
+</body>
+</html>

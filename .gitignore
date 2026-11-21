@@ -22,3 +22,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Fichiers audio sources (publiés sur Ausha, pas dans le dépôt)
+audio/
