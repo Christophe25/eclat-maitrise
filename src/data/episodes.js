@@ -30,6 +30,7 @@ export const episodes = [
     episodeNumber: 2,
     title: "Épisode 2 – Qu'est-ce que l'excellence opérationnelle en joaillerie ?",
     shortTitle: "L'excellence opérationnelle",
+    image: '/infographics/ep-2.jpg',
     plannedDuration: '16 min',
     description:
       "Pièces uniques, petites séries, matière à très forte valeur : le Lean né dans l'automobile peut-il s'appliquer à un atelier de joaillerie ? Valeur client, flux et respect du geste artisan.",
