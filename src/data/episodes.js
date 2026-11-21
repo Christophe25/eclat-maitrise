@@ -52,6 +52,7 @@ export const episodes = [
     episodeNumber: 4,
     title: 'Épisode 4 – Le 5S à l’établi',
     shortTitle: "Le 5S à l'établi",
+    image: '/infographics/ep-4.jpg',
     plannedDuration: '15 min',
     description:
       "Un établi ordonné, c'est un outil qu'on trouve, une pierre qu'on ne perd pas et des limailles qu'on récupère. Le 5S comme premier rempart de la qualité… et de la gestion du métal précieux.",
