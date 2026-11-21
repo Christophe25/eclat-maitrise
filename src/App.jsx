@@ -1,12 +1,12 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { episodes, bonusEpisodes, podcastMeta } from './data';
-import { PodcastCard } from './components/PodcastCard';
+import { Piece } from './components/Piece';
+import { Fiche } from './components/Fiche';
 import { AudioPlayer } from './components/AudioPlayer';
-import { NavBar } from './components/NavBar';
-import { Diamond } from './components/Diamond';
-import { Gem, Archive, Library, Award } from 'lucide-react';
+import { ExternalLink } from 'lucide-react';
 import { QRCodeSVG } from 'qrcode.react';
 import { Analytics } from '@vercel/analytics/react';
+import './salon.css';
 
 const STORAGE_KEY = 'eclat_read_ids';
 
@@ -18,9 +18,16 @@ function loadReadIds() {
   }
 }
 
+const VITRINES = [
+  { id: 'collection', label: 'La collection' },
+  { id: 'rares', label: 'Pièces rares' },
+  { id: 'coffre', label: 'Le coffre' },
+];
+
 function App() {
-  const [activeTab, setActiveTab] = useState('all');
+  const [vitrine, setVitrine] = useState('collection');
   const [readIds, setReadIds] = useState(loadReadIds);
+  const [opened, setOpened] = useState(null);
   const [currentPodcast, setCurrentPodcast] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef(null);
@@ -32,14 +39,14 @@ function App() {
   const toggleRead = (id) =>
     setReadIds(prev => (prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]));
 
-  // File de lecture = liste affichée, limitée aux épisodes publiés.
-  const playable = (activeTab === 'bonus' ? bonusEpisodes : episodes).filter(p => p.audioUrl);
+  const all = [...episodes, ...bonusEpisodes];
+  const displayed = vitrine === 'collection' ? episodes
+    : vitrine === 'rares' ? bonusEpisodes
+      : all.filter(p => readIds.includes(p.id));
 
-  const displayedItems = activeTab === 'bonus'
-    ? bonusEpisodes
-    : episodes.filter(p => (activeTab === 'archives' ? readIds.includes(p.id) : !readIds.includes(p.id)));
-
-  const publishedCount = episodes.filter(p => p.audioUrl).length;
+  const playable = (bonusEpisodes.some(b => b.id === currentPodcast?.id) ? bonusEpisodes : episodes)
+    .filter(p => p.audioUrl);
+  const presentedCount = episodes.filter(p => p.audioUrl).length;
 
   const handlePlay = (podcast) => {
     if (currentPodcast?.id === podcast.id) {
@@ -62,119 +69,117 @@ function App() {
     if (!currentPodcast) return;
     const idx = playable.findIndex(p => p.id === currentPodcast.id);
     const next = playable[idx + delta];
-    if (next) {
-      setCurrentPodcast(next);
-      setIsPlaying(true);
-    }
+    if (next) { setCurrentPodcast(next); setIsPlaying(true); }
   };
 
+  const closeFiche = useCallback(() => setOpened(null), []);
+
   return (
-    <>
-      <NavBar />
-      <div className="container">
-        <audio
-          ref={audioRef}
-          onEnded={() => { setIsPlaying(false); step(1); }}
-          onPause={() => setIsPlaying(false)}
-          onPlay={() => setIsPlaying(true)}
-        />
+    <div className="salon">
+      <audio
+        ref={audioRef}
+        onEnded={() => { setIsPlaying(false); step(1); }}
+        onPause={() => setIsPlaying(false)}
+        onPlay={() => setIsPlaying(true)}
+      />
 
-        <header className="hero">
-          <div className="hero-bg">
-            <div className="hero-facets" />
-            <Diamond className="hero-diamond" strokeWidth={0.6} />
-            <div className="hero-overlay" />
-          </div>
+      <header className="salon-entree">
+        <div className="salon-boiseries" aria-hidden="true" />
+        <div className="salon-lustre" aria-hidden="true" />
 
-          <div className="hero-qrcode glass">
-            <QRCodeSVG value={window.location.href} size={64} bgColor="transparent" fgColor="#e3c48c" />
-            <span className="hero-qrcode-text">Scanner pour<br />partager</span>
-          </div>
+        <nav className="salon-nav">
+          <span className="salon-signature">{podcastMeta.author}</span>
+          <a href={podcastMeta.sisterSeries.url} target="_blank" rel="noreferrer">
+            <ExternalLink size={14} /> {podcastMeta.sisterSeries.title}
+          </a>
+        </nav>
 
-          <div className="hero-content">
-            <div className="badge glass">
-              <Gem size={18} color="var(--primary)" />
-              <span>Série de podcasts</span>
-            </div>
-            <h1>{podcastMeta.title}</h1>
-            <p className="subtitle">{podcastMeta.description}</p>
-            <div className="hero-stats">
-              <div className="stat">
-                <span className="stat-value">{episodes.length}</span>
-                <span className="stat-label">Épisodes</span>
-              </div>
-              <div className="stat">
-                <span className="stat-value">{publishedCount}</span>
-                <span className="stat-label">Publiés</span>
-              </div>
-              <div className="stat">
-                <span className="stat-value">par</span>
-                <span className="stat-label">{podcastMeta.author}</span>
-              </div>
-            </div>
-          </div>
-        </header>
+        <div className="plaque">
+          <span className="plaque-vis" aria-hidden="true" />
+          <h1>{podcastMeta.title}</h1>
+          <p>{podcastMeta.tagline}</p>
+          <span className="plaque-vis plaque-vis--r" aria-hidden="true" />
+        </div>
 
-        <div className="tabs" role="tablist">
-          {[
-            { id: 'all', label: 'Épisodes', icon: <Library size={18} style={{ marginRight: '8px', verticalAlign: 'middle' }} /> },
-            { id: 'archives', label: 'Archives', icon: <Archive size={18} style={{ marginRight: '8px', verticalAlign: 'middle' }} /> },
-            { id: 'bonus', label: 'Bonus', icon: <Award size={18} style={{ marginRight: '8px', verticalAlign: 'middle' }} /> },
-          ].map(({ id, label, icon }) => (
+        <p className="salon-accroche">{podcastMeta.description}</p>
+
+        <div className="salon-registre">
+          <span><strong>{presentedCount}</strong> pièces présentées</span>
+          <span className="salon-sep">·</span>
+          <span><strong>{episodes.length}</strong> au catalogue</span>
+          <span className="salon-qr" title="Scanner pour partager">
+            <QRCodeSVG value={window.location.href} size={44} bgColor="transparent" fgColor="#d9b46a" />
+          </span>
+        </div>
+      </header>
+
+      <main className="salon-main">
+        <div className="vitrines" role="tablist" aria-label="Vitrines">
+          {VITRINES.map(v => (
             <button
-              key={id}
+              key={v.id}
               role="tab"
-              aria-selected={activeTab === id}
-              className={`tab ${activeTab === id ? 'active' : ''}`}
-              onClick={() => setActiveTab(id)}
+              aria-selected={vitrine === v.id}
+              className={`vitrine-tab ${vitrine === v.id ? 'vitrine-tab--on' : ''}`}
+              onClick={() => setVitrine(v.id)}
             >
-              {icon}
-              {label}
+              {v.label}
+              {v.id === 'coffre' && readIds.length > 0 && <span className="vitrine-count">{readIds.length}</span>}
             </button>
           ))}
         </div>
 
-        <div className="podcast-grid">
-          {displayedItems.map(podcast => (
-            <PodcastCard
-              key={podcast.id}
-              podcast={podcast}
-              isRead={readIds.includes(podcast.id)}
-              isCurrentlyPlaying={currentPodcast?.id === podcast.id && isPlaying}
-              onToggleRead={toggleRead}
-              onPlay={handlePlay}
-            />
-          ))}
-        </div>
-
-        {displayedItems.length === 0 && (
-          <div className="empty-state">
-            <Gem size={48} color="var(--text-secondary)" />
-            <p>{activeTab === 'archives' ? 'Aucun épisode archivé.' : 'Tous les épisodes ont été écoutés !'}</p>
+        <section className="plateau" aria-label="Plateau de présentation">
+          <div className="plateau-velours">
+            {displayed.length > 0 ? (
+              <div className="plateau-grille">
+                {displayed.map(ep => (
+                  <Piece
+                    key={ep.id}
+                    episode={ep}
+                    isListened={readIds.includes(ep.id)}
+                    isPlaying={currentPodcast?.id === ep.id && isPlaying}
+                    onOpen={setOpened}
+                  />
+                ))}
+              </div>
+            ) : (
+              <p className="plateau-vide">
+                Le coffre est vide. Ouvrez une pièce et choisissez « Mettre au coffre » une fois l'épisode écouté.
+              </p>
+            )}
           </div>
-        )}
+        </section>
+      </main>
 
-        {currentPodcast && (
-          <AudioPlayer
-            podcast={currentPodcast}
-            isPlaying={isPlaying}
-            audioRef={audioRef}
-            onPlayPause={() => (isPlaying ? audioRef.current?.pause() : audioRef.current?.play())}
-            onPrev={() => step(-1)}
-            onNext={() => step(1)}
-            onClose={() => {
-              if (audioRef.current) {
-                audioRef.current.pause();
-                audioRef.current.currentTime = 0;
-              }
-              setIsPlaying(false);
-              setCurrentPodcast(null);
-            }}
-          />
-        )}
-      </div>
+      {opened && (
+        <Fiche
+          episode={opened}
+          isPlaying={currentPodcast?.id === opened.id && isPlaying}
+          isListened={readIds.includes(opened.id)}
+          onPlay={handlePlay}
+          onToggleListened={toggleRead}
+          onClose={closeFiche}
+        />
+      )}
+
+      {currentPodcast && (
+        <AudioPlayer
+          podcast={currentPodcast}
+          isPlaying={isPlaying}
+          audioRef={audioRef}
+          onPlayPause={() => (isPlaying ? audioRef.current?.pause() : audioRef.current?.play())}
+          onPrev={() => step(-1)}
+          onNext={() => step(1)}
+          onClose={() => {
+            if (audioRef.current) { audioRef.current.pause(); audioRef.current.currentTime = 0; }
+            setIsPlaying(false);
+            setCurrentPodcast(null);
+          }}
+        />
+      )}
       <Analytics />
-    </>
+    </div>
   );
 }
 
