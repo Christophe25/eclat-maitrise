@@ -1,6 +1,6 @@
 <!doctype html>
 <html><head><meta charset="utf-8">
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;800&family=Montserrat:wght@600;700&display=swap" rel="stylesheet">
 <style>html,body{margin:0;background:#000}canvas{display:block}</style>
 </head><body>
 <canvas id="c" width="2048" height="2048"></canvas>
@@ -9,7 +9,8 @@
 // Usage : retouch.html?ep=N  → rendu à capturer avec Chrome headless.
 //
 // Toutes les images : suppression du titre « L'ÉCLAT MAÎTRISÉ ».
-// Épisodes 2 à 4 : suppression de la ligne « ÉPISODE N ».
+// Épisodes 2 à 4 : suppression de « JOAILLERIE & LEAN MANAGEMENT », de la ligne
+// « ÉPISODE N » et du thème, puis thème réécrit en haut, en taille de titre.
 // Épisode 2 : corrections de texte (doublon Jidoka, faute sur le carnet).
 
 const EP = Number(new URLSearchParams(location.search).get('ep'));
@@ -17,58 +18,122 @@ const EP = Number(new URLSearchParams(location.search).get('ep'));
 // Zones à effacer [x0, y0, x1, y1] (coordonnées de l'original 2048 px)
 const ERASE = {
   1: [[432, 88, 1622, 250]],
-  2: [[432, 88, 1622, 250], [850, 332, 1200, 421, 'top']],
-  3: [[400, 70, 1650, 250], [560, 332, 1510, 421, 'top']],
-  4: [[400, 70, 1650, 250], [560, 332, 1510, 421, 'top']],
+  2: [[432, 88, 1622, 250], [450, 250, 1620, 320, 'top'], [850, 320, 1200, 421, 'top'], [500, 421, 1555, 496, 'top']],
+  3: [[400, 70, 1650, 250], [178, 236, 1870, 334], [560, 320, 1510, 421, 'top'], [690, 421, 1360, 496, 'top']],
+  4: [[400, 70, 1650, 250], [178, 236, 1870, 334], [560, 320, 1510, 421, 'top'], [735, 421, 1315, 496, 'top']],
+};
+
+// Thème réécrit en haut, en taille de titre : lignes, centres verticaux, largeur max
+const TITLE = {
+  2: { lines: ['L’EXCELLENCE', 'OPÉRATIONNELLE'], y: [175, 300], maxWidth: 1150, maxSize: 118 },
+  3: { lines: ['LES 7 GASPILLAGES'], y: [185], maxWidth: 1220, maxSize: 132 },
+  4: { lines: ['LE 5S À L’ÉTABLI'], y: [185], maxWidth: 1220, maxSize: 132 },
 };
 
 const lum = (r, g, b) => 0.2126 * r + 0.7152 * g + 0.0722 * b;
 
-// Reconstitue le fond d'une zone : pour chaque colonne, interpolation verticale
-// entre la teinte (pixels sombres) juste au-dessus et juste en dessous
-// (mode 'top' : teinte du dessus seulement, quand le dessous touche un texte),
-// léger grain pour imiter la texture, bords fondus dans l'original.
-function erase(ctx, [x0, y0, x1, y1, mode], feather = 14) {
-  const pad = 6, w = x1 - x0, h = y1 - y0;
-  const above = ctx.getImageData(x0, y0 - pad, w, pad).data;
-  const below = ctx.getImageData(x0, y1, w, pad).data;
-  const orig = ctx.getImageData(x0, y0, w, h);
-  const out = ctx.createImageData(w, h);
+// Reconstitue le fond de toutes les zones à la fois par diffusion (inpainting
+// harmonique multi-échelle) : chaque pixel effacé prend la moyenne de ses voisins,
+// jusqu'à un fond continu qui raccorde partout avec le pourtour, sans raccords.
+// Les pixels clairs du pourtour (texte, ornements) sont assombris pour ne pas
+// « baver » dans la zone. Un léger grain imite ensuite la texture.
+function eraseAll(ctx, zones) {
+  if (!zones.length) return;
+  const M = 24;
+  let bx0 = Math.min(...zones.map(z => z[0])) - M, by0 = Math.min(...zones.map(z => z[1])) - M;
+  let bx1 = Math.max(...zones.map(z => z[2])) + M, by1 = Math.max(...zones.map(z => z[3])) + M;
+  bx0 = Math.max(0, bx0); by0 = Math.max(0, by0); bx1 = Math.min(2048, bx1); by1 = Math.min(2048, by1);
+  const w = bx1 - bx0, h = by1 - by0, N = w * h;
+  const img = ctx.getImageData(bx0, by0, w, h);
+  const mask = new Uint8Array(N);
+  zones.forEach(([x0, y0, x1, y1]) => {
+    for (let y = y0; y < y1; y++) for (let x = x0; x < x1; x++) mask[(y - by0) * w + (x - bx0)] = 1;
+  });
+  const C = [new Float32Array(N), new Float32Array(N), new Float32Array(N)];
+  const CAP = 55;
+  for (let i = 0; i < N; i++) {
+    let r = img.data[i * 4], g = img.data[i * 4 + 1], b = img.data[i * 4 + 2];
+    const l = lum(r, g, b);
+    if (!mask[i] && l > CAP) { const f = CAP / l; r *= f; g *= f; b *= f; }
+    C[0][i] = r; C[1][i] = g; C[2][i] = b;
+  }
 
-  const strip = (data, x) => {
-    let r = 0, g = 0, b = 0, n = 0;
-    for (let dx = -16; dx <= 16; dx += 2) {
-      const xx = Math.min(w - 1, Math.max(0, x + dx));
-      for (let y = 0; y < pad; y++) {
-        const i = (y * w + xx) * 4;
-        if (lum(data[i], data[i + 1], data[i + 2]) < 45) { r += data[i]; g += data[i + 1]; b += data[i + 2]; n++; }
+  // 1) Grossier (cellules de 8 px) : beaucoup d'itérations pour les grandes longueurs d'onde
+  const F = 8, cw = Math.ceil(w / F), ch = Math.ceil(h / F), CN = cw * ch;
+  const cknown = new Uint8Array(CN), cv = [new Float32Array(CN), new Float32Array(CN), new Float32Array(CN)];
+  for (let cy = 0; cy < ch; cy++) for (let cx = 0; cx < cw; cx++) {
+    let n = 0, s0 = 0, s1 = 0, s2 = 0;
+    for (let y = cy * F; y < Math.min(h, cy * F + F); y++) for (let x = cx * F; x < Math.min(w, cx * F + F); x++) {
+      const i = y * w + x; if (!mask[i]) { n++; s0 += C[0][i]; s1 += C[1][i]; s2 += C[2][i]; }
+    }
+    const k = cy * cw + cx;
+    if (n > F * F / 2) { cknown[k] = 1; cv[0][k] = s0 / n; cv[1][k] = s1 / n; cv[2][k] = s2 / n; }
+    else { cv[0][k] = 20; cv[1][k] = 20; cv[2][k] = 22; }
+  }
+  for (let it = 0; it < 3000; it++) {
+    for (let cy = 0; cy < ch; cy++) for (let cx = 0; cx < cw; cx++) {
+      const k = cy * cw + cx; if (cknown[k]) continue;
+      for (let c = 0; c < 3; c++) {
+        let s = 0, n = 0;
+        if (cx > 0) { s += cv[c][k - 1]; n++; } if (cx < cw - 1) { s += cv[c][k + 1]; n++; }
+        if (cy > 0) { s += cv[c][k - cw]; n++; } if (cy < ch - 1) { s += cv[c][k + cw]; n++; }
+        cv[c][k] = s / n;
       }
     }
-    return n ? [r / n, g / n, b / n] : [16, 16, 20];
+  }
+  // 2) Initialisation pleine résolution par interpolation bilinéaire du grossier
+  const sample = (c, fx, fy) => {
+    const x = Math.min(cw - 1, Math.max(0, fx)), y = Math.min(ch - 1, Math.max(0, fy));
+    const x0 = Math.floor(x), y0 = Math.floor(y), x1 = Math.min(cw - 1, x0 + 1), y1 = Math.min(ch - 1, y0 + 1);
+    const tx = x - x0, ty = y - y0;
+    return (cv[c][y0 * cw + x0] * (1 - tx) + cv[c][y0 * cw + x1] * tx) * (1 - ty) +
+           (cv[c][y1 * cw + x0] * (1 - tx) + cv[c][y1 * cw + x1] * tx) * ty;
   };
-
-  const top = [], bot = [];
-  for (let x = 0; x < w; x++) { top.push(strip(above, x)); bot.push(strip(below, x)); }
-
-  let seed = 1234;
-  const rand = () => ((seed = (seed * 16807) % 2147483647) / 2147483647) - 0.5;
-
-  for (let y = 0; y < h; y++) {
-    const t = mode === 'top' ? 0 : y / (h - 1);
-    for (let x = 0; x < w; x++) {
-      const i = (y * w + x) * 4;
-      const n = rand() * 5;
-      const fill = [0, 1, 2].map(k => top[x][k] * (1 - t) + bot[x][k] * t + n);
-      // fondu sur les bords
-      // en mode 'top', fondu très court en bas (le texte du thème commence juste dessous)
-      const db = mode === 'top' ? (h - 1 - y) * 5 : h - 1 - y;
-      const d = Math.min(x, w - 1 - x, y, db);
-      const a = Math.min(1, d / feather);
-      for (let k = 0; k < 3; k++) out.data[i + k] = fill[k] * a + orig.data[i + k] * (1 - a);
-      out.data[i + 3] = 255;
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+    const i = y * w + x; if (!mask[i]) continue;
+    for (let c = 0; c < 3; c++) C[c][i] = sample(c, x / F - 0.5, y / F - 0.5);
+  }
+  // 3) Affinage pleine résolution (raccord précis avec le pourtour)
+  for (let it = 0; it < 120; it++) {
+    for (let y = 1; y < h - 1; y++) for (let x = 1; x < w - 1; x++) {
+      const i = y * w + x; if (!mask[i]) continue;
+      for (let c = 0; c < 3; c++) C[c][i] = (C[c][i - 1] + C[c][i + 1] + C[c][i - w] + C[c][i + w]) / 4;
     }
   }
-  ctx.putImageData(out, x0, y0);
+  // 4) Grain et écriture
+  let seed = 1234;
+  const rand = () => ((seed = (seed * 16807) % 2147483647) / 2147483647) - 0.5;
+  for (let i = 0; i < N; i++) {
+    if (!mask[i]) continue;
+    const n = rand() * 5;
+    img.data[i * 4] = C[0][i] + n; img.data[i * 4 + 1] = C[1][i] + n; img.data[i * 4 + 2] = C[2][i] + n;
+  }
+  ctx.putImageData(img, bx0, by0);
+}
+
+// Titre doré gravé, police à empattements (proche de l'ancien « L'ÉCLAT MAÎTRISÉ »)
+function drawTitle(ctx, { lines, y, maxWidth, maxSize }) {
+  const font = size => `800 ${size}px Cinzel`;
+  let size = maxSize;
+  ctx.font = font(size);
+  while (size > 40 && Math.max(...lines.map(l => ctx.measureText(l).width)) > maxWidth) ctx.font = font(--size);
+  lines.forEach((text, i) => {
+    const cy = y[i];
+    ctx.save();
+    ctx.font = font(size); ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    // halo doux
+    ctx.shadowColor = 'rgba(240,190,100,.45)'; ctx.shadowBlur = 28;
+    ctx.fillStyle = 'rgba(0,0,0,0)'; ctx.fillText(text, 1024, cy);
+    // ombre portée sombre (relief)
+    ctx.shadowColor = 'rgba(0,0,0,.85)'; ctx.shadowBlur = 6; ctx.shadowOffsetY = 4;
+    const g = ctx.createLinearGradient(0, cy - size * 0.45, 0, cy + size * 0.45);
+    g.addColorStop(0, '#fbe7b0'); g.addColorStop(0.45, '#e2b764'); g.addColorStop(0.55, '#c8944a'); g.addColorStop(1, '#9c6a26');
+    ctx.fillStyle = g; ctx.fillText(text, 1024, cy);
+    // liseré clair en haut des lettres
+    ctx.shadowColor = 'transparent';
+    ctx.lineWidth = 1.4; ctx.strokeStyle = 'rgba(255,240,200,.55)'; ctx.strokeText(text, 1024, cy - 1);
+    ctx.restore();
+  });
 }
 
 // ---------- Corrections propres à l'épisode 2 ----------
@@ -119,11 +184,13 @@ function fixEpisode2(ctx) {
 
 (async () => {
   await document.fonts.load('700 40px Montserrat');
+  await document.fonts.load('800 100px Cinzel');
   const img = new Image(); img.src = `ep-${EP}-gemini.jpg`; await img.decode();
   const ctx = document.getElementById('c').getContext('2d', { willReadFrequently: true });
   ctx.drawImage(img, 0, 0);
   if (EP === 2) fixEpisode2(ctx);
-  (ERASE[EP] || []).forEach(z => erase(ctx, z));
+  eraseAll(ctx, ERASE[EP] || []);
+  if (TITLE[EP]) drawTitle(ctx, TITLE[EP]);
   document.title = 'done';
 })();
 </script>
