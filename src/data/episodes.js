@@ -63,6 +63,7 @@ export const episodes = [
     episodeNumber: 5,
     title: 'Épisode 5 – Le bilan matière : chaque gramme compte',
     shortTitle: 'Le bilan matière',
+    image: '/infographics/ep-5.jpg',
     plannedDuration: '17 min',
     description:
       "Comptabilité des métaux précieux, taux de perte par opération, récupération des déchets et affinage, titres et poinçons : piloter la matière comme un indicateur de performance à part entière.",

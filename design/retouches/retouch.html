@@ -1,6 +1,6 @@
 <!doctype html>
 <html><head><meta charset="utf-8">
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;800&family=Montserrat:wght@600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;800&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet">
 <style>html,body{margin:0;background:#000}canvas{display:block}</style>
 </head><body>
 <canvas id="c" width="2048" height="2048"></canvas>
@@ -39,24 +39,40 @@ const lum = (r, g, b) => 0.2126 * r + 0.7152 * g + 0.0722 * b;
 // jusqu'à un fond continu qui raccorde partout avec le pourtour, sans raccords.
 // Les pixels clairs du pourtour (texte, ornements) sont assombris pour ne pas
 // « baver » dans la zone. Un léger grain imite ensuite la texture.
-function eraseAll(ctx, zones) {
+// Une zone est soit un rectangle [x0, y0, x1, y1], soit un arc
+// { arc: [cx, cy, r0, r1, a0, a1] } (angles en degrés, y vers le bas).
+function zoneBox(z) {
+  if (!z.arc) return z;
+  const [cx, cy, , r1] = z.arc; return [cx - r1, cy - r1, cx + r1, cy + r1];
+}
+function inZone(z, x, y) {
+  if (!z.arc) return x >= z[0] && x < z[2] && y >= z[1] && y < z[3];
+  const [cx, cy, r0, r1, a0, a1] = z.arc;
+  const dx = x - cx, dy = y - cy, r = Math.hypot(dx, dy);
+  const a = (Math.atan2(dy, dx) * 180 / Math.PI + 360) % 360;
+  return r >= r0 && r <= r1 && a >= a0 && a <= a1;
+}
+function eraseAll(ctx, zones, { cap = true } = {}) {
   if (!zones.length) return;
+  const boxes = zones.map(zoneBox);
   const M = 24;
-  let bx0 = Math.min(...zones.map(z => z[0])) - M, by0 = Math.min(...zones.map(z => z[1])) - M;
-  let bx1 = Math.max(...zones.map(z => z[2])) + M, by1 = Math.max(...zones.map(z => z[3])) + M;
+  let bx0 = Math.min(...boxes.map(z => z[0])) - M, by0 = Math.min(...boxes.map(z => z[1])) - M;
+  let bx1 = Math.max(...boxes.map(z => z[2])) + M, by1 = Math.max(...boxes.map(z => z[3])) + M;
   bx0 = Math.max(0, bx0); by0 = Math.max(0, by0); bx1 = Math.min(2048, bx1); by1 = Math.min(2048, by1);
   const w = bx1 - bx0, h = by1 - by0, N = w * h;
   const img = ctx.getImageData(bx0, by0, w, h);
   const mask = new Uint8Array(N);
-  zones.forEach(([x0, y0, x1, y1]) => {
-    for (let y = y0; y < y1; y++) for (let x = x0; x < x1; x++) mask[(y - by0) * w + (x - bx0)] = 1;
+  zones.forEach((z, k) => {
+    const [x0, y0, x1, y1] = boxes[k];
+    for (let y = Math.max(by0, y0); y < Math.min(by1, y1); y++) for (let x = Math.max(bx0, x0); x < Math.min(bx1, x1); x++)
+      if (inZone(z, x, y)) mask[(y - by0) * w + (x - bx0)] = 1;
   });
   const C = [new Float32Array(N), new Float32Array(N), new Float32Array(N)];
   const CAP = 55;
   for (let i = 0; i < N; i++) {
     let r = img.data[i * 4], g = img.data[i * 4 + 1], b = img.data[i * 4 + 2];
     const l = lum(r, g, b);
-    if (!mask[i] && l > CAP) { const f = CAP / l; r *= f; g *= f; b *= f; }
+    if (cap && !mask[i] && l > CAP) { const f = CAP / l; r *= f; g *= f; b *= f; }
     C[0][i] = r; C[1][i] = g; C[2][i] = b;
   }
 
@@ -138,6 +154,32 @@ function drawTitle(ctx, { lines, y, maxWidth, maxSize }) {
   });
 }
 
+// Texte le long d'un arc (bas d'un médaillon), lettres claires cernées de brun
+function arcText(ctx, text, cx, cy, r, centerDeg, size) {
+  ctx.save();
+  ctx.font = `800 ${size}px Montserrat`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  const spacing = size * 0.06;
+  const widths = [...text].map(ch => ctx.measureText(ch).width + spacing);
+  const total = widths.reduce((a, b) => a + b, 0) - spacing;
+  let acc = 0;
+  [...text].forEach((ch, i) => {
+    const mid = acc + widths[i] / 2 - spacing / 2;
+    const theta = centerDeg + ((total / 2 - mid) / r) * 180 / Math.PI;
+    const t = theta * Math.PI / 180;
+    ctx.save();
+    ctx.translate(cx + r * Math.cos(t), cy + r * Math.sin(t));
+    ctx.rotate((theta - 90) * Math.PI / 180);
+    ctx.lineJoin = 'round';
+    ctx.lineWidth = size * 0.16; ctx.strokeStyle = '#3a2610'; ctx.strokeText(ch, 0, 0);
+    const g = ctx.createLinearGradient(0, -size / 2, 0, size / 2);
+    g.addColorStop(0, '#f6dfa6'); g.addColorStop(1, '#d3a85e');
+    ctx.fillStyle = g; ctx.fillText(ch, 0, 0);
+    ctx.restore();
+    acc += widths[i];
+  });
+  ctx.restore();
+}
+
 // ---------- Corrections propres à l'épisode 2 ----------
 function paperColor(ctx, x, y, w, h, minLum = 170) {
   const d = ctx.getImageData(x, y, w, h).data; let r = 0, g = 0, b = 0, n = 0;
@@ -184,13 +226,21 @@ function fixEpisode2(ctx) {
   inkText(ctx, 'SUIVI VSM', 1326, 1572, 28, -13.5, '#241b13');
 }
 
+function fixEpisode5(ctx) {
+  // Médaillon 5 : « AFFINER » en double → « FONDRE » (l'image montre une coulée d'or)
+  eraseAll(ctx, [{ arc: [1783, 1518, 126, 190, 48, 133] }], { cap: false });
+  arcText(ctx, 'FONDRE', 1783, 1518, 160, 90, 50);
+}
+
 (async () => {
   await document.fonts.load('700 40px Montserrat');
+  await document.fonts.load('800 40px Montserrat');
   await document.fonts.load('800 100px Cinzel');
   const img = new Image(); img.src = `ep-${EP}-gemini.jpg`; await img.decode();
   const ctx = document.getElementById('c').getContext('2d', { willReadFrequently: true });
   ctx.drawImage(img, 0, 0);
   if (EP === 2) fixEpisode2(ctx);
+  if (EP === 5) fixEpisode5(ctx);
   eraseAll(ctx, ERASE[EP] || []);
   if (TITLE[EP]) drawTitle(ctx, TITLE[EP]);
   document.title = 'done';
