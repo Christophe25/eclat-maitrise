@@ -1,0 +1,130 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&display=swap" rel="stylesheet">
+<style>html,body{margin:0;background:#000}canvas{display:block}</style>
+</head><body>
+<canvas id="c" width="2048" height="2048"></canvas>
+<script>
+// Retouches des illustrations Gemini (originaux 2048 × 2048 : ep-N-gemini.jpg).
+// Usage : retouch.html?ep=N  → rendu à capturer avec Chrome headless.
+//
+// Toutes les images : suppression du titre « L'ÉCLAT MAÎTRISÉ ».
+// Épisodes 2 à 4 : suppression de la ligne « ÉPISODE N ».
+// Épisode 2 : corrections de texte (doublon Jidoka, faute sur le carnet).
+
+const EP = Number(new URLSearchParams(location.search).get('ep'));
+
+// Zones à effacer [x0, y0, x1, y1] (coordonnées de l'original 2048 px)
+const ERASE = {
+  1: [[432, 88, 1622, 250]],
+  2: [[432, 88, 1622, 250], [850, 332, 1200, 421, 'top']],
+  3: [[400, 70, 1650, 250], [560, 332, 1510, 421, 'top']],
+  4: [[400, 70, 1650, 250], [560, 332, 1510, 421, 'top']],
+};
+
+const lum = (r, g, b) => 0.2126 * r + 0.7152 * g + 0.0722 * b;
+
+// Reconstitue le fond d'une zone : pour chaque colonne, interpolation verticale
+// entre la teinte (pixels sombres) juste au-dessus et juste en dessous
+// (mode 'top' : teinte du dessus seulement, quand le dessous touche un texte),
+// léger grain pour imiter la texture, bords fondus dans l'original.
+function erase(ctx, [x0, y0, x1, y1, mode], feather = 14) {
+  const pad = 6, w = x1 - x0, h = y1 - y0;
+  const above = ctx.getImageData(x0, y0 - pad, w, pad).data;
+  const below = ctx.getImageData(x0, y1, w, pad).data;
+  const orig = ctx.getImageData(x0, y0, w, h);
+  const out = ctx.createImageData(w, h);
+
+  const strip = (data, x) => {
+    let r = 0, g = 0, b = 0, n = 0;
+    for (let dx = -16; dx <= 16; dx += 2) {
+      const xx = Math.min(w - 1, Math.max(0, x + dx));
+      for (let y = 0; y < pad; y++) {
+        const i = (y * w + xx) * 4;
+        if (lum(data[i], data[i + 1], data[i + 2]) < 45) { r += data[i]; g += data[i + 1]; b += data[i + 2]; n++; }
+      }
+    }
+    return n ? [r / n, g / n, b / n] : [16, 16, 20];
+  };
+
+  const top = [], bot = [];
+  for (let x = 0; x < w; x++) { top.push(strip(above, x)); bot.push(strip(below, x)); }
+
+  let seed = 1234;
+  const rand = () => ((seed = (seed * 16807) % 2147483647) / 2147483647) - 0.5;
+
+  for (let y = 0; y < h; y++) {
+    const t = mode === 'top' ? 0 : y / (h - 1);
+    for (let x = 0; x < w; x++) {
+      const i = (y * w + x) * 4;
+      const n = rand() * 5;
+      const fill = [0, 1, 2].map(k => top[x][k] * (1 - t) + bot[x][k] * t + n);
+      // fondu sur les bords
+      // en mode 'top', fondu très court en bas (le texte du thème commence juste dessous)
+      const db = mode === 'top' ? (h - 1 - y) * 5 : h - 1 - y;
+      const d = Math.min(x, w - 1 - x, y, db);
+      const a = Math.min(1, d / feather);
+      for (let k = 0; k < 3; k++) out.data[i + k] = fill[k] * a + orig.data[i + k] * (1 - a);
+      out.data[i + 3] = 255;
+    }
+  }
+  ctx.putImageData(out, x0, y0);
+}
+
+// ---------- Corrections propres à l'épisode 2 ----------
+function paperColor(ctx, x, y, w, h, minLum = 170) {
+  const d = ctx.getImageData(x, y, w, h).data; let r = 0, g = 0, b = 0, n = 0;
+  for (let i = 0; i < d.length; i += 4) {
+    if (lum(d[i], d[i + 1], d[i + 2]) >= minLum) { r += d[i]; g += d[i + 1]; b += d[i + 2]; n++; }
+  }
+  return `rgb(${r / n | 0},${g / n | 0},${b / n | 0})`;
+}
+function avgColor(ctx, x, y, w, h) {
+  const d = ctx.getImageData(x, y, w, h).data; let r = 0, g = 0, b = 0, n = d.length / 4;
+  for (let i = 0; i < d.length; i += 4) { r += d[i]; g += d[i + 1]; b += d[i + 2]; }
+  return `rgb(${r / n | 0},${g / n | 0},${b / n | 0})`;
+}
+function patch(ctx, color, x, y, w, h, feather = 10) {
+  ctx.save(); ctx.fillStyle = color;
+  ctx.filter = `blur(${feather}px)`; ctx.fillRect(x, y, w, h);
+  ctx.filter = 'none'; ctx.fillRect(x + feather, y + feather / 2, w - 2 * feather, h - feather);
+  ctx.restore();
+}
+function goldText(ctx, text, cx, cy, size) {
+  ctx.save(); ctx.font = `700 ${size}px Montserrat`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  const g = ctx.createLinearGradient(0, cy - size / 2, 0, cy + size / 2);
+  g.addColorStop(0, '#f3d79b'); g.addColorStop(0.5, '#d9ac5c'); g.addColorStop(1, '#a8772f');
+  ctx.shadowColor = 'rgba(230,180,90,.35)'; ctx.shadowBlur = 6; ctx.fillStyle = g; ctx.fillText(text, cx, cy);
+  ctx.restore();
+}
+function inkText(ctx, text, cx, cy, size, angle, color) {
+  ctx.save(); ctx.translate(cx, cy); ctx.rotate(angle * Math.PI / 180);
+  ctx.font = `700 ${size}px Montserrat`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.fillStyle = color; ctx.fillText(text, 0, 0); ctx.restore();
+}
+function fixEpisode2(ctx) {
+  // « JIDOKA (Qualité à la Source) » en double → « FLUX TIRÉ »
+  patch(ctx, avgColor(ctx, 1000, 1395, 30, 60), 672, 1392, 334, 96, 8);
+  goldText(ctx, 'FLUX TIRÉ', 836, 1438, 44);
+  // « SDIVI SUIVI VSM » → « SUIVI VSM » (bandeau du carnet, en perspective)
+  const paper = paperColor(ctx, 1215, 1560, 230, 70);
+  const quad = [[1208, 1586], [1445, 1526], [1448, 1560], [1208, 1614]];
+  ctx.save(); ctx.fillStyle = paper; ctx.filter = 'blur(3px)';
+  ctx.beginPath(); quad.forEach(([x, y], i) => i ? ctx.lineTo(x, y) : ctx.moveTo(x, y)); ctx.closePath(); ctx.fill();
+  ctx.filter = 'none'; ctx.fill(); ctx.restore();
+  ctx.save(); ctx.strokeStyle = '#1d1712'; ctx.lineWidth = 2.6; ctx.lineCap = 'round';
+  ctx.beginPath(); ctx.moveTo(1355, 1585.8); ctx.lineTo(1471, 1551.5); ctx.stroke(); ctx.restore();
+  inkText(ctx, 'SUIVI VSM', 1326, 1572, 28, -13.5, '#241b13');
+}
+
+(async () => {
+  await document.fonts.load('700 40px Montserrat');
+  const img = new Image(); img.src = `ep-${EP}-gemini.jpg`; await img.decode();
+  const ctx = document.getElementById('c').getContext('2d', { willReadFrequently: true });
+  ctx.drawImage(img, 0, 0);
+  if (EP === 2) fixEpisode2(ctx);
+  (ERASE[EP] || []).forEach(z => erase(ctx, z));
+  document.title = 'done';
+})();
+</script>
+</body></html>
