@@ -8,10 +8,13 @@ export function PodcastCard({ podcast, isRead, isCurrentlyPlaying, onToggleRead,
   const available = Boolean(podcast.audioUrl);
 
   return (
-    <div className={`card glass ${isRead ? 'card--read' : ''} ${podcast.image ? 'card--featured' : ''}`}>
+    <div className={`card glass ${isRead ? 'card--read' : ''}`}>
       <div className={`card-image ${podcast.image ? 'card-image--illustration' : ''}`}>
         {podcast.image
-          ? <img src={podcast.image} alt={podcast.title} />
+          ? <>
+              <img src={podcast.image} alt="" aria-hidden="true" className="card-image-backdrop" />
+              <img src={podcast.image} alt={podcast.title} className="card-image-main" />
+            </>
           : <EpisodeCover episode={podcast} />}
         {available && (
           <button
