@@ -9,7 +9,7 @@ export function PodcastCard({ podcast, isRead, isCurrentlyPlaying, onToggleRead,
 
   return (
     <div className={`card glass ${isRead ? 'card--read' : ''}`}>
-      <div className="card-image">
+      <div className={`card-image ${podcast.image ? 'card-image--illustration' : ''}`}>
         {podcast.image
           ? <img src={podcast.image} alt={podcast.title} />
           : <EpisodeCover episode={podcast} />}

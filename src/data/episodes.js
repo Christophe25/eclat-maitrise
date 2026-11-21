@@ -19,7 +19,7 @@ export const episodes = [
     episodeNumber: 1,
     title: "Épisode 1 – L'héritage joaillier",
     shortTitle: "L'héritage joaillier",
-    image: '/infographics/ep-1.png',
+    image: '/infographics/ep-1.jpg',
     plannedDuration: '14 min',
     description:
       "De l'orfèvre de la Renaissance aux grandes maisons de haute joaillerie : comment une exigence de précision au centième de carat a façonné une culture du zéro défaut, terrain naturel pour l'excellence opérationnelle.",

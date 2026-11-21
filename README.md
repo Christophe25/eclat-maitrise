@@ -15,7 +15,7 @@ Série sœur de [Le Temps Maîtrisé](https://opex-five.vercel.app/) (React + Vi
 - `src/data/episodes.js` : titres, descriptions et mots-clés des 12 épisodes et 4 bonus.
 - `src/data/quizzes.js` : 3 questions par épisode.
 - `src/data/audio.json` : URL, durée et date des épisodes publiés, mis à jour par `npm run publish`.
-- `public/infographics/ep-N.png` : infographie de l'épisode (source HTML dans `design/infographics/`). Sans infographie, un visuel « diamant » est généré.
+- `public/infographics/ep-N.jpg|png` : illustration de l’épisode (paysage ou carré, déclarée via `image` dans `episodes.js`). Sans infographie, un visuel « diamant » est généré.
 - `audio/` : fichiers audio sources, exclus de git.
 
 ## Publier un épisode
