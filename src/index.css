@@ -1018,31 +1018,15 @@ h1 {
   .hero-diamond { opacity: 0.18; width: 70vw; right: -10vw; }
 }
 
-/* Illustration fournie (souvent paysage) : même carré que les autres cartes,
-   image entière, espaces comblés par un fond flou tiré de l'image */
+/* Illustration fournie : remplit le carré de la carte (recadrage centré) */
 .card-image--illustration {
   background: #000;
 }
 
-.card-image--illustration .card-image-backdrop {
-  position: absolute;
-  inset: 0;
+.card-image--illustration .card-image-main {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center;
   padding: 0;
-  filter: blur(22px) brightness(0.45) saturate(1.1);
-  transform: scale(1.15);
-}
-
-.card-image--illustration .card-image-main {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  padding: 0;
-}
-
-.card:hover .card-image--illustration .card-image-backdrop {
-  transform: scale(1.15);
 }
