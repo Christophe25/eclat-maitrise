@@ -198,7 +198,8 @@ html, body {
   gap: 2.25vw;
   margin: -6.5vw 0 0;
   padding: 0 4.4vw 0 5.5vw;
-  align-items: start;
+  align-items: stretch;
+  grid-auto-rows: 1fr; /* toutes les rangées à la hauteur de la plus haute */
 }
 
 .a-vide {
@@ -414,6 +415,15 @@ html, body {
 .atelier .player-time { color: var(--a-gris); }
 .atelier .player-progress-bar { background: var(--a-filet); }
 .atelier .player-progress-fill, .atelier .player-progress-dot { background: var(--a-or); }
+
+/* ---------------- Cartes de même hauteur ----------------
+   Les cartes d'une rangée prennent la hauteur de la plus grande ;
+   le bandeau réserve 2 lignes ; les actions sont calées en bas. */
+.carte { display: flex; flex-direction: column; }
+.carte-cadre { flex: 1; display: flex; flex-direction: column; }
+.carte-bandeau { min-height: calc(2 * 1.15em + 1.6vw); }
+.carte-corps { flex: 1; display: flex; flex-direction: column; }
+.carte-texte { flex: 1; }
 
 /* ---------------- Responsive ---------------- */
 @media (max-width: 1000px) {
