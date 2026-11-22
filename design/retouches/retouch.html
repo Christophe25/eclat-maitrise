@@ -1,6 +1,6 @@
 <!doctype html>
 <html><head><meta charset="utf-8">
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;800&family=Montserrat:wght@600;700;800&family=Patrick+Hand&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;800&family=Montserrat:wght@600;700;800&family=Patrick+Hand&family=Dancing+Script:wght@600&display=swap" rel="stylesheet">
 <style>html,body{margin:0;background:#000}canvas{display:block}</style>
 </head><body>
 <canvas id="c"></canvas>
@@ -19,7 +19,6 @@ const EP = Number(new URLSearchParams(location.search).get('ep'));
 
 // Zones à effacer [x0, y0, x1, y1] (coordonnées de l'original 2048 px)
 const ERASE = {
-  1: [[432, 88, 1622, 250], [440, 250, 1620, 322]],
   2: [[432, 88, 1622, 250], [450, 250, 1620, 320, 'top'], [850, 320, 1200, 421, 'top'], [500, 421, 1555, 496, 'top']],
   3: [[400, 70, 1650, 250], [178, 236, 1870, 334], [560, 320, 1510, 421, 'top'], [690, 421, 1360, 496, 'top']],
   4: [[400, 70, 1650, 250], [178, 236, 1870, 334], [560, 320, 1510, 421, 'top'], [735, 421, 1315, 496, 'top']],
@@ -27,7 +26,6 @@ const ERASE = {
 
 // Thème réécrit en haut, en taille de titre : lignes, centres verticaux, largeur max
 const TITLE = {
-  1: { lines: ['JOAILLERIE &', 'LEAN MANAGEMENT'], y: [175, 300], maxWidth: 1150, maxSize: 118 },
   2: { lines: ['L’EXCELLENCE', 'OPÉRATIONNELLE'], y: [175, 300], maxWidth: 1150, maxSize: 118 },
   3: { lines: ['LES 7 GASPILLAGES'], y: [185], maxWidth: 1220, maxSize: 132 },
   4: { lines: ['LE 5S À L’ÉTABLI'], y: [185], maxWidth: 1220, maxSize: 132 },
@@ -253,6 +251,35 @@ function fixEpisode2(ctx) {
   inkText(ctx, 'SUIVI VSM', 1326, 1572, 28, -13.5, '#241b13');
 }
 
+function scriptText(ctx, text, x, y, size, deg) {
+  ctx.save();
+  ctx.translate(x, y); ctx.rotate(deg * Math.PI / 180);
+  ctx.font = `600 ${size}px "Dancing Script"`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.fillStyle = 'rgba(28, 26, 28, .93)';
+  ctx.fillText(text, 0, 0);
+  ctx.restore();
+}
+
+function fixEpisode1(ctx) {
+  // Thème « carnet » : on retire « L'ÉCLAT MAÎTRISÉ » et « ÉPISODE 1 » (on garde « Joaillerie & Lean Management »)
+  // contour mesuré au plus près : le bas du titre frôle le haut de « Joaillerie & Lean Management »
+  eraseAll(ctx, [{ poly: [
+    [700, 400], [780, 372], [1000, 352], [1300, 318], [1530, 282], [1595, 282],
+    [1595, 388], [1560, 392], [1480, 401], [1470, 404], [1390, 410], [1290, 420], [1215, 429],
+    [1180, 444], [1105, 446], [1050, 456], [1000, 462], [960, 463], [900, 470], [870, 474],
+    [820, 479], [760, 483], [700, 483],
+  ] }], { cap: false });
+  eraseAll(ctx, [[1045, 500, 1300, 552]], { cap: false });
+  eraseAll(ctx, [[795, 355, 818, 378]], { cap: false }); // point isolé au-dessus du titre effacé
+  // « la muiede » (illisible) → « l'unité » ; « de mesure » conservé
+  eraseAll(ctx, [{ poly: [[782, 794], [958, 794], [958, 834], [880, 836], [860, 846], [782, 846]] }], { cap: false });
+  scriptText(ctx, 'l’unité', 862, 826, 40, -5);
+  // 2e « la tradition suisse » (vers « Gestion de la valeur ») → « le savoir-faire »
+  eraseAll(ctx, [[828, 1100, 1003, 1180]], { cap: false });
+  scriptText(ctx, 'le savoir-', 915, 1122, 40, -7);
+  scriptText(ctx, 'faire', 920, 1158, 40, -7);
+}
+
 function fixEpisode5(ctx) {
   // Thème « carnet » : médaillon 5 (coulée de métal) libellé « AFFINER » en double → « FONDRE »
   eraseAll(ctx, [{ poly: [[1830, 1241], [1953, 1212], [2002, 1216], [2006, 1238], [1957, 1267], [1833, 1282]] }], { cap: false });
@@ -344,6 +371,7 @@ if (new URLSearchParams(location.search).has('hero')) document.getElementById('h
   await document.fonts.load('800 40px Montserrat');
   await document.fonts.load('800 100px Cinzel');
   await document.fonts.load('62px "Patrick Hand"');
+  await document.fonts.load('600 40px "Dancing Script"');
   // Mode « hero » : fond photo de la page d'accueil, extrait de la maquette
   if (new URLSearchParams(location.search).has('hero')) { await renderHero(); return; }
   const img = new Image(); img.src = `ep-${EP}-gemini.jpg`; await img.decode();
@@ -352,6 +380,7 @@ if (new URLSearchParams(location.search).has('hero')) document.getElementById('h
   const ctx = canvas.getContext('2d', { willReadFrequently: true });
   ctx.drawImage(img, 0, 0);
   if (EP === 2) fixEpisode2(ctx);
+  if (EP === 1) fixEpisode1(ctx);
   if (EP === 5) fixEpisode5(ctx);
   eraseAll(ctx, ERASE[EP] || []);
   if (TITLE[EP]) drawTitle(ctx, TITLE[EP]);
