@@ -8,7 +8,7 @@ export const podcastMeta = {
   description:
     "Savoir-faire, exigence, respect de la matière, transmission : les valeurs de la Maison Cartier, vues par un qualiticien. Chaque épisode les relie à un outil du Lean ou de la qualité, à l'établi du joaillier.",
   disclaimer:
-    "Projet personnel et indépendant, réalisé dans le cadre d'une candidature. Non affilié à Cartier ; les valeurs citées proviennent de sources publiques de la Maison.",
+    "Travail d'analyse personnel et indépendant sur l'univers de la haute joaillerie. Non affilié à Cartier ; les informations citées proviennent de sources publiques.",
   author: 'Christophe Fournier',
   sisterSeries: { title: 'Le Temps Maîtrisé', url: 'https://opex-five.vercel.app/' },
 };
