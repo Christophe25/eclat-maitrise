@@ -4,6 +4,7 @@
 <style>html,body{margin:0;background:#000}canvas{display:block}</style>
 </head><body>
 <canvas id="c"></canvas>
+<img id="heroSrc" alt="" style="display:none">
 <script>
 // Retouches des illustrations Gemini (originaux ep-N-gemini.jpg, taille quelconque).
 // Usage : retouch.html?ep=N  → rendu à capturer avec Chrome headless.
@@ -263,9 +264,53 @@ function fixEpisode5(ctx) {
   ctx.restore();
 }
 
+// Retire les traits dorés fins d'une zone (box en pixels de l'image) : un pixel est retenu
+// s'il est nettement plus « chaud » (r − b) que son voisinage, puis on reconstitue le fond.
+function removeGold(ctx, box, H, { Rb = 12, R = 3, diff = 20, minWarm = 38, minG = 12, protectDark = 0 } = {}) {
+  const [bx0, by0, bx1, by1] = [box[0], Math.max(0, box[1]), box[2], Math.min(H, box[3])];
+  const bw = bx1 - bx0, bh = by1 - by0;
+  const px = ctx.getImageData(bx0, by0, bw, bh).data;
+  // « chaleur » d'un pixel = r − b ; un trait doré est nettement plus chaud que son voisinage
+  const warm = new Float32Array(bw * bh);
+  for (let i = 0; i < bw * bh; i++) warm[i] = px[i * 4] - px[i * 4 + 2];
+  // moyenne locale (boîte 25 × 25) via image intégrale
+  const I = new Float64Array((bw + 1) * (bh + 1));
+  for (let y = 0; y < bh; y++) { let row = 0; for (let x = 0; x < bw; x++) { row += warm[y * bw + x]; I[(y + 1) * (bw + 1) + x + 1] = I[y * (bw + 1) + x + 1] + row; } }
+  
+  const gold = new Uint8Array(bw * bh);
+  for (let y = 0; y < bh; y++) for (let x = 0; x < bw; x++) {
+    const xa = Math.max(0, x - Rb), xb = Math.min(bw, x + Rb + 1), ya = Math.max(0, y - Rb), yb = Math.min(bh, y + Rb + 1);
+    const sum = I[yb * (bw + 1) + xb] - I[ya * (bw + 1) + xb] - I[yb * (bw + 1) + xa] + I[ya * (bw + 1) + xa];
+    const mean = sum / ((xb - xa) * (yb - ya));
+    const i = y * bw + x, g = px[i * 4 + 1] - px[i * 4 + 2];
+    if (warm[i] - mean > diff && warm[i] > minWarm && g > minG) gold[i] = 1;
+  }
+  // élargissement de 3 px pour englober le liseré des traits
+  const mask = new Uint8Array(bw * bh);
+  for (let y = 0; y < bh; y++) for (let x = 0; x < bw; x++) {
+    if (!gold[y * bw + x]) continue;
+    for (let dy = -R; dy <= R; dy++) for (let dx = -R; dx <= R; dx++) {
+      const xx = x + dx, yy = y + dy;
+      if (xx < 0 || yy < 0 || xx >= bw || yy >= bh) continue;
+      const j = yy * bw + xx;
+      // option : ne jamais effacer les pixels sombres et neutres voisins (liserés gris, texte)
+      if (protectDark && lum(px[j * 4], px[j * 4 + 1], px[j * 4 + 2]) < protectDark && Math.abs(px[j * 4] - px[j * 4 + 2]) < 22) continue;
+      mask[j] = 1;
+    }
+  }
+  if (new URLSearchParams(location.search).has('debug')) {
+    const out = ctx.getImageData(bx0, by0, bw, bh);
+    for (let i = 0; i < bw * bh; i++) if (mask[i]) { out.data[i * 4] = 255; out.data[i * 4 + 1] = 0; out.data[i * 4 + 2] = 255; }
+    ctx.putImageData(out, bx0, by0);
+  } else {
+    eraseAll(ctx, [{ mask, box: [bx0, by0, bx1, by1] }], { cap: false });
+  }
+}
+
 async function renderHero() {
   const S = 1.2, Y0 = 126, H = 1188;           // maquette 2400 × 1792 ; zones notées sur une vue 2000 px
-  const img = new Image(); img.src = '../maquette-accueil.jpeg'; await img.decode();
+  const img = document.getElementById('heroSrc');
+  if (!img.complete || !img.naturalWidth) await new Promise(r => img.addEventListener('load', r, { once: true }));
   const canvas = document.getElementById('c');
   canvas.width = 2400; canvas.height = H;
   const ctx = canvas.getContext('2d', { willReadFrequently: true });
@@ -284,47 +329,17 @@ async function renderHero() {
     z(1333, 958, 1918, 1095),
   ].map(r => [r[0], Math.max(0, r[1]), r[2], Math.min(H, r[3])]).forEach(r => eraseAll(ctx, [r], { cap: false }));
 
-  // Diamond en filet doré (en haut à droite) : on ne retire que ses traits dorés
-  const box = z(1200, 245, 1860, 578);
-  const [bx0, by0, bx1, by1] = [box[0], Math.max(0, box[1]), box[2], Math.min(H, box[3])];
-  const bw = bx1 - bx0, bh = by1 - by0;
-  const px = ctx.getImageData(bx0, by0, bw, bh).data;
-  // « chaleur » d'un pixel = r − b ; un trait doré est nettement plus chaud que son voisinage
-  const warm = new Float32Array(bw * bh);
-  for (let i = 0; i < bw * bh; i++) warm[i] = px[i * 4] - px[i * 4 + 2];
-  // moyenne locale (boîte 25 × 25) via image intégrale
-  const I = new Float64Array((bw + 1) * (bh + 1));
-  for (let y = 0; y < bh; y++) { let row = 0; for (let x = 0; x < bw; x++) { row += warm[y * bw + x]; I[(y + 1) * (bw + 1) + x + 1] = I[y * (bw + 1) + x + 1] + row; } }
-  const Rb = 12;
-  const gold = new Uint8Array(bw * bh);
-  for (let y = 0; y < bh; y++) for (let x = 0; x < bw; x++) {
-    const xa = Math.max(0, x - Rb), xb = Math.min(bw, x + Rb + 1), ya = Math.max(0, y - Rb), yb = Math.min(bh, y + Rb + 1);
-    const sum = I[yb * (bw + 1) + xb] - I[ya * (bw + 1) + xb] - I[yb * (bw + 1) + xa] + I[ya * (bw + 1) + xa];
-    const mean = sum / ((xb - xa) * (yb - ya));
-    const i = y * bw + x, g = px[i * 4 + 1] - px[i * 4 + 2];
-    if (warm[i] - mean > 20 && warm[i] > 38 && g > 18) gold[i] = 1;
-  }
-  // élargissement de 3 px pour englober le liseré des traits
-  const mask = new Uint8Array(bw * bh);
-  const R = 3;
-  for (let y = 0; y < bh; y++) for (let x = 0; x < bw; x++) {
-    if (!gold[y * bw + x]) continue;
-    for (let dy = -R; dy <= R; dy++) for (let dx = -R; dx <= R; dx++) {
-      const xx = x + dx, yy = y + dy;
-      if (xx >= 0 && yy >= 0 && xx < bw && yy < bh) mask[yy * bw + xx] = 1;
-    }
-  }
-  if (new URLSearchParams(location.search).has('debug')) {
-    const out = ctx.getImageData(bx0, by0, bw, bh);
-    for (let i = 0; i < bw * bh; i++) if (mask[i]) { out.data[i * 4] = 255; out.data[i * 4 + 1] = 0; out.data[i * 4 + 2] = 255; }
-    ctx.putImageData(out, bx0, by0);
-  } else {
-    eraseAll(ctx, [{ mask, box: [bx0, by0, bx1, by1] }], { cap: false });
-  }
+  // Diamants en filet doré : on ne retire que leurs traits
+  removeGold(ctx, z(1200, 245, 1860, 578), H);                       // grand diamant, en haut à droite
+  removeGold(ctx, [1115, 715, 1315, 822], H, { Rb: 10, R: 3, diff: 5, minWarm: 10, minG: 4, protectDark: 175 });
+  removeGold(ctx, [1115, 737, 1315, 822], H, { Rb: 10, R: 2, diff: 3, minWarm: 6, minG: 2, protectDark: 175 }); // 2e passage : traces pâles // miniature sur l'écran de la tablette
   document.title = 'done';
 }
 
+if (new URLSearchParams(location.search).has('hero')) document.getElementById('heroSrc').src = '../maquette-accueil.jpeg';
+
 (async () => {
+  if (new URLSearchParams(location.search).has('hero')) { await renderHero(); return; }
   await document.fonts.load('700 40px Montserrat');
   await document.fonts.load('800 40px Montserrat');
   await document.fonts.load('800 100px Cinzel');
