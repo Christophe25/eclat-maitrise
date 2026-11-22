@@ -83,26 +83,26 @@ export const quizzes = {
   'ep-4': [
     {
       question: 'Quel est le premier S du 5S ?',
-      options: ['Ranger (Seiton)', 'Trier / Débarrasser (Seiri)', 'Nettoyer (Seiso)', 'Standardiser (Seiketsu)'],
+      options: ['Ranger', 'Trier', 'Nettoyer', 'Standardiser'],
       correctAnswer: 1,
-      explanation: "On commence par éliminer l'inutile avant de ranger ce qui reste.",
+      explanation: 'On commence par éliminer l’inutile (Seiri) avant de ranger ce qui reste.',
     },
     {
-      question: "En joaillerie, quel bénéfice spécifique apporte le nettoyage rigoureux de l'établi ?",
+      question: 'Pourquoi prévoir une boîte par commande à l’établi du sertisseur ?',
       options: [
-        'Un meilleur éclairage',
-        'La récupération des limailles et déchets de métal précieux',
-        'Une réduction du bruit',
-        'Un gain de place au sol',
+        'Pour décorer l’établi',
+        'Pour ne jamais confondre les pierres de deux commandes',
+        'Pour gagner de la place au sol',
+        'Pour remplacer le contrôle final',
       ],
       correctAnswer: 1,
-      explanation: "Les limailles et poussières sont collectées puis envoyées à l'affinage : le 5S protège aussi la matière.",
+      explanation: 'Un emplacement dédié rend l’erreur difficile : c’est l’esprit du détrompeur.',
     },
     {
       question: 'Quel S est le plus difficile à tenir dans la durée ?',
-      options: ['Trier', 'Ranger', 'Nettoyer', 'Maintenir / faire respecter (Shitsuke)'],
+      options: ['Trier', 'Ranger', 'Nettoyer', 'Maintenir (Shitsuke)'],
       correctAnswer: 3,
-      explanation: "Sans discipline et audits réguliers, l'atelier retrouve vite son désordre initial.",
+      explanation: 'Sans discipline partagée et sans courts audits réguliers, l’établi retrouve vite son désordre.',
     },
   ],
   'ep-5': [

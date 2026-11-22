@@ -59,7 +59,7 @@ export const episodes = [
     image: '/infographics/ep-4.jpg',
     plannedDuration: '15 min',
     description:
-      "Un établi ordonné, c'est un outil qu'on trouve, une pierre qu'on ne perd pas et des limailles qu'on récupère. Le 5S comme premier rempart de la qualité… et de la gestion du métal précieux.",
+      "À l'établi du joaillier et du sertisseur, l'ordre sert l'exigence : trier, ranger, nettoyer, standardiser, maintenir. Une boîte par commande pour ne jamais confondre les pierres, des outils à portée de main, des limailles récupérées, et le détrompeur pour rendre l'erreur impossible.",
     keywords: [...base, '5S', 'organisation'],
   },
   {
