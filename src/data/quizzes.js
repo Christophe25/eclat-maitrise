@@ -2,27 +2,27 @@
 export const quizzes = {
   'ep-1': [
     {
-      question: 'À combien de grammes correspond un carat, unité de poids des pierres précieuses ?',
-      options: ['0,1 g', '0,2 g', '1 g', '2 g'],
-      correctAnswer: 1,
-      explanation: 'Un carat métrique vaut 0,2 g (200 mg). La précision se joue au centième de carat, soit 2 mg.',
+      question: 'Dans quelle ville le bracelet LOVE a-t-il été créé en 1969 ?',
+      options: ['Paris', 'Londres', 'New York', 'Genève'],
+      correctAnswer: 2,
+      explanation: 'Cartier indique que le LOVE est une icône depuis sa création à New York en 1969.',
     },
     {
-      question: "Quelle valeur de la tradition joaillière rejoint le plus directement l'excellence opérationnelle ?",
-      options: ['La production de masse', 'La quête du zéro défaut', 'La sous-traitance systématique', 'La vitesse avant tout'],
+      question: 'Qui crée en 1948 la première panthère en volume ?',
+      options: ['Louis Cartier', 'Jeanne Toussaint', 'Aldo Cipullo', 'Maurice Coüet'],
       correctAnswer: 1,
-      explanation: "Sur une pièce unique, il n'y a pas de seconde chance : le zéro défaut est culturel.",
+      explanation: 'Jeanne Toussaint, alors directrice de la joaillerie, donne à la Panthère sa première forme en volume en 1948.',
     },
     {
-      question: 'Pourquoi la transmission du savoir-faire est-elle un enjeu majeur ?',
+      question: 'Pour qu’une signature traverse les décennies, que faut-il en plus de l’audace créative ?',
       options: [
-        'Parce que les gestes clés reposent souvent sur quelques artisans expérimentés',
-        'Parce que les machines remplacent les artisans',
-        'Parce que les clients exigent des certificats de formation',
-        "Parce qu'elle réduit le prix de l'or",
+        'Changer de style à chaque collection',
+        'Une exécution identique, pièce après pièce',
+        'Produire le plus vite possible',
+        'Réduire le nombre de contrôles',
       ],
-      correctAnswer: 0,
-      explanation: 'Sans formalisation, un départ à la retraite peut emporter un savoir-faire critique.',
+      correctAnswer: 1,
+      explanation: 'Une signature n’est reconnaissable que si son exécution est constante : c’est le terrain de l’excellence opérationnelle.',
     },
   ],
   'ep-2': [
