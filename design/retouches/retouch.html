@@ -42,12 +42,17 @@ const lum = (r, g, b) => 0.2126 * r + 0.7152 * g + 0.0722 * b;
 // Une zone est soit un rectangle [x0, y0, x1, y1], soit un arc
 // { arc: [cx, cy, r0, r1, a0, a1] } (angles en degrés, y vers le bas).
 function zoneBox(z) {
+  if (z.mask) return z.box;
   if (z.poly) { const xs = z.poly.map(q => q[0]), ys = z.poly.map(q => q[1]); return [Math.min(...xs), Math.min(...ys), Math.max(...xs), Math.max(...ys)].map(Math.round); }
   if (z.rot) { const [cx, cy, w, h] = z.rot, r = Math.hypot(w, h) / 2; return [cx - r, cy - r, cx + r, cy + r].map(Math.round); }
   if (!z.arc) return z;
   const [cx, cy, , r1] = z.arc; return [cx - r1, cy - r1, cx + r1, cy + r1];
 }
 function inZone(z, x, y) {
+  if (z.mask) {
+    const [x0, y0, x1] = z.box;
+    return z.mask[(y - y0) * (x1 - x0) + (x - x0)] === 1;
+  }
   if (z.poly) {
     let inside = false;
     for (let i = 0, j = z.poly.length - 1; i < z.poly.length; j = i++) {
@@ -278,6 +283,44 @@ async function renderHero() {
     z(720, 958, 1302, 1095),
     z(1333, 958, 1918, 1095),
   ].map(r => [r[0], Math.max(0, r[1]), r[2], Math.min(H, r[3])]).forEach(r => eraseAll(ctx, [r], { cap: false }));
+
+  // Diamond en filet doré (en haut à droite) : on ne retire que ses traits dorés
+  const box = z(1200, 245, 1860, 578);
+  const [bx0, by0, bx1, by1] = [box[0], Math.max(0, box[1]), box[2], Math.min(H, box[3])];
+  const bw = bx1 - bx0, bh = by1 - by0;
+  const px = ctx.getImageData(bx0, by0, bw, bh).data;
+  // « chaleur » d'un pixel = r − b ; un trait doré est nettement plus chaud que son voisinage
+  const warm = new Float32Array(bw * bh);
+  for (let i = 0; i < bw * bh; i++) warm[i] = px[i * 4] - px[i * 4 + 2];
+  // moyenne locale (boîte 25 × 25) via image intégrale
+  const I = new Float64Array((bw + 1) * (bh + 1));
+  for (let y = 0; y < bh; y++) { let row = 0; for (let x = 0; x < bw; x++) { row += warm[y * bw + x]; I[(y + 1) * (bw + 1) + x + 1] = I[y * (bw + 1) + x + 1] + row; } }
+  const Rb = 12;
+  const gold = new Uint8Array(bw * bh);
+  for (let y = 0; y < bh; y++) for (let x = 0; x < bw; x++) {
+    const xa = Math.max(0, x - Rb), xb = Math.min(bw, x + Rb + 1), ya = Math.max(0, y - Rb), yb = Math.min(bh, y + Rb + 1);
+    const sum = I[yb * (bw + 1) + xb] - I[ya * (bw + 1) + xb] - I[yb * (bw + 1) + xa] + I[ya * (bw + 1) + xa];
+    const mean = sum / ((xb - xa) * (yb - ya));
+    const i = y * bw + x, g = px[i * 4 + 1] - px[i * 4 + 2];
+    if (warm[i] - mean > 20 && warm[i] > 38 && g > 18) gold[i] = 1;
+  }
+  // élargissement de 3 px pour englober le liseré des traits
+  const mask = new Uint8Array(bw * bh);
+  const R = 3;
+  for (let y = 0; y < bh; y++) for (let x = 0; x < bw; x++) {
+    if (!gold[y * bw + x]) continue;
+    for (let dy = -R; dy <= R; dy++) for (let dx = -R; dx <= R; dx++) {
+      const xx = x + dx, yy = y + dy;
+      if (xx >= 0 && yy >= 0 && xx < bw && yy < bh) mask[yy * bw + xx] = 1;
+    }
+  }
+  if (new URLSearchParams(location.search).has('debug')) {
+    const out = ctx.getImageData(bx0, by0, bw, bh);
+    for (let i = 0; i < bw * bh; i++) if (mask[i]) { out.data[i * 4] = 255; out.data[i * 4 + 1] = 0; out.data[i * 4 + 2] = 255; }
+    ctx.putImageData(out, bx0, by0);
+  } else {
+    eraseAll(ctx, [{ mask, box: [bx0, by0, bx1, by1] }], { cap: false });
+  }
   document.title = 'done';
 }
 
