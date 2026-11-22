@@ -445,6 +445,7 @@ if (new URLSearchParams(location.search).has('hero')) document.getElementById('h
   if (EP === 3) fixEpisode3Carnet(ctx);
   if (EP === 5) fixEpisode5Joaillerie(ctx); // ancienne version « carnet bilan matière » : fixEpisode5
   if (EP === 6) fixEpisode6(ctx);
+  if (EP === 7) softenDecor(ctx);
   if (EP === 12) fixEpisode12(ctx);
   eraseAll(ctx, ERASE[EP] || []);
   if (TITLE[EP]) drawTitle(ctx, TITLE[EP]);

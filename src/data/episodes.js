@@ -87,12 +87,13 @@ export const episodes = [
   {
     id: 'ep-7',
     episodeNumber: 7,
-    title: 'Épisode 7 – Contrôler l’éclat',
-    shortTitle: "Contrôler l'éclat",
-    plannedDuration: '16 min',
+    title: 'Épisode 7 – Maîtriser la complexité : anticiper les risques',
+    shortTitle: 'Maîtriser la complexité',
+    image: '/infographics/ep-7.jpg',
+    plannedDuration: '15 min',
     description:
-      "L'exigence d'une grande Maison se joue aussi au contrôle. Comment rendre objectif un jugement d'aspect : loupe ×10, conditions d'éclairage, échantillons limites, contrôle à 100 % ou par échantillonnage.",
-    keywords: [...base, 'contrôle visuel', 'échantillons limites'],
+      "La Panthère, apparue vers 1914 et sculptée en volume dès 1948 sous Jeanne Toussaint, ou le Tutti Frutti (1925) : des pièces d'une grande complexité. Pierre qui se desserre, articulation fragile : l'AMDEC pour coter gravité, occurrence et détection, et prévenir avant de fabriquer.",
+    keywords: [...base, 'AMDEC', 'risques'],
   },
   {
     id: 'ep-8',
