@@ -62,27 +62,22 @@ export const quizzes = {
   ],
   'ep-3': [
     {
-      question: 'Une bague montée attend trois jours que ses pierres arrivent. Quel muda est-ce ?',
+      question: 'Une pièce montée attend plusieurs jours que ses pierres arrivent. Quel gaspillage est-ce ?',
       options: ['Surproduction', 'Attente', 'Transport', 'Mouvements inutiles'],
       correctAnswer: 1,
-      explanation: "La pièce n'avance pas : c'est du temps d'attente, souvent lié à un flux mal synchronisé.",
+      explanation: 'La pièce n’avance pas : c’est de l’attente, souvent liée à un flux mal synchronisé entre métiers.',
     },
     {
-      question: 'Polir une surface intérieure invisible au niveau « miroir » relève de…',
-      options: ['La surqualité (sur-traitement)', 'La valeur ajoutée', 'Le transport', 'Le stock'],
-      correctAnswer: 0,
-      explanation: "Faire plus que ce que le client valorise est un sur-traitement : du temps et de la matière consommés pour rien.",
-    },
-    {
-      question: 'Pourquoi le stock de métal précieux est-il un gaspillage particulièrement coûteux ?',
-      options: [
-        "Parce qu'il s'oxyde rapidement",
-        'Parce qu’il immobilise une trésorerie importante',
-        "Parce qu'il est interdit par la loi",
-        'Parce qu’il prend beaucoup de place',
-      ],
+      question: 'Polir au miroir une surface que la cliente ne verra jamais relève de…',
+      options: ['La valeur ajoutée', 'La surqualité (sur-traitement)', 'Le stock', 'La détection'],
       correctAnswer: 1,
-      explanation: "L'or en stock ou en en-cours représente un capital immobilisé considérable.",
+      explanation: 'Faire plus que ce que la cliente valorise consomme du temps sans créer de valeur.',
+    },
+    {
+      question: 'Quel « 8e gaspillage » ajoute-t-on souvent aux 7 mudas ?',
+      options: ['Le talent inexploité', 'La météo', 'Le prix de l’or', 'La concurrence'],
+      correctAnswer: 0,
+      explanation: 'Ne pas solliciter les idées des artisans est un gaspillage : ils sont les mieux placés pour améliorer leur poste.',
     },
   ],
   'ep-4': [
