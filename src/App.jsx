@@ -2,7 +2,6 @@ import { useState, useEffect, useRef } from 'react';
 import { episodes, bonusEpisodes, podcastMeta } from './data';
 import { Carte } from './components/Carte';
 import { AudioPlayer } from './components/AudioPlayer';
-import { Diamond } from './components/Diamond';
 import { Gem, Library, Archive, Award, ExternalLink } from 'lucide-react';
 import { QRCodeSVG } from 'qrcode.react';
 import { Analytics } from '@vercel/analytics/react';
@@ -82,7 +81,7 @@ function App() {
         <div className="a-top-in">
           <div>
             <div className="a-top-name">{podcastMeta.author}</div>
-            <div className="a-top-sub">Qualité · Excellence opérationnelle · Joaillerie</div>
+            <div className="a-top-sub">Qualité - Excellence opérationnelle - Joaillerie</div>
           </div>
           <a className="a-top-link" href={podcastMeta.sisterSeries.url} target="_blank" rel="noreferrer">
             <ExternalLink size={17} /> {podcastMeta.sisterSeries.title}
@@ -91,12 +90,10 @@ function App() {
       </header>
 
       <section className="a-hero">
-        <div className="a-hero-etabli" aria-hidden="true" />
-        <Diamond className="a-hero-diamant" strokeWidth={0.7} aria-hidden="true" />
 
         <div className="a-hero-in">
           <div className="a-qr">
-            <QRCodeSVG value={window.location.href} size={78} bgColor="transparent" fgColor="#1b1a18" />
+            <QRCodeSVG value={window.location.href} size={256} bgColor="transparent" fgColor="#1b1a18" />
             <span>Scanner pour<br />partager</span>
           </div>
 

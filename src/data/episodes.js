@@ -19,7 +19,7 @@ export const episodes = [
     episodeNumber: 1,
     title: "Épisode 1 – L'héritage joaillier",
     shortTitle: "L'héritage joaillier",
-    cardTitle: 'Joaillerie & Lean management',
+    cardTitle: 'Joaillerie &\nLean management',
     image: '/infographics/ep-1.jpg',
     plannedDuration: '14 min',
     description:
