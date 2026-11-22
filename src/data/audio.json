@@ -28,5 +28,10 @@
     "audioUrl": "https://eclat-audio.srv1298063.hstgr.cloud/ep-6.m4a?v=1795374246",
     "duration": "14 min",
     "date": "2026-11-22"
+  },
+  "ep-7": {
+    "audioUrl": "https://eclat-audio.srv1298063.hstgr.cloud/ep-7.m4a?v=1795375065",
+    "duration": "10 min",
+    "date": "2026-11-22"
   }
 }
