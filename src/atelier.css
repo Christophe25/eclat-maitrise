@@ -375,6 +375,18 @@ html, body {
 
 .carte-icone:hover, .carte-icone.on { color: var(--a-or); border-color: var(--a-or-clair); background: #fffaf0; }
 
+/* mention de non-affiliation */
+.a-footer {
+  max-width: 900px;
+  margin: 4rem auto 0;
+  padding: 1.6rem 1.5rem 0;
+  border-top: 1px solid var(--a-filet);
+  text-align: center;
+  font-size: .82rem;
+  line-height: 1.6;
+  color: var(--a-gris);
+}
+
 /* quiz sur fond clair */
 .atelier .quiz-container { margin-top: 0; border-top: 1px solid var(--a-filet); border-radius: 0; background: var(--a-blanc) !important; }
 .atelier .quiz-option { background: #fff; border-color: var(--a-filet); }

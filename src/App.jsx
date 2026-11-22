@@ -142,6 +142,8 @@ function App() {
         )}
       </main>
 
+      <footer className="a-footer">{podcastMeta.disclaimer}</footer>
+
       {currentPodcast && (
         <AudioPlayer
           podcast={currentPodcast}

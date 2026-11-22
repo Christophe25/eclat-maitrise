@@ -4,9 +4,11 @@
 
 export const podcastMeta = {
   title: "L'Éclat Maîtrisé",
-  tagline: "Excellence opérationnelle dans la joaillerie",
+  tagline: "Les valeurs de la Maison Cartier, vues par un qualiticien",
   description:
-    "Une pièce unique, un métal facturé au gramme, une pierre perdue qu'on ne remplace pas : en joaillerie, chaque gaspillage brille. Chaque épisode applique un outil du Lean ou de la qualité à l'établi du joaillier.",
+    "Savoir-faire, exigence, respect de la matière, transmission : les valeurs de la Maison Cartier, vues par un qualiticien. Chaque épisode les relie à un outil du Lean ou de la qualité, à l'établi du joaillier.",
+  disclaimer:
+    "Projet personnel et indépendant, réalisé dans le cadre d'une candidature. Non affilié à Cartier ; les valeurs citées proviennent de sources publiques de la Maison.",
   author: 'Christophe Fournier',
   sisterSeries: { title: 'Le Temps Maîtrisé', url: 'https://opex-five.vercel.app/' },
 };
@@ -68,7 +70,7 @@ export const episodes = [
     image: '/infographics/ep-5.jpg',
     plannedDuration: '17 min',
     description:
-      "Comptabilité des métaux précieux, taux de perte par opération, récupération des déchets et affinage, titres et poinçons : piloter la matière comme un indicateur de performance à part entière.",
+      "Le respect de la matière fait partie des engagements publics de Cartier, de l'approvisionnement responsable à l'exclusion des matériaux synthétiques. À l'atelier, ce respect commence sur la balance : bilan matière, poids fin, taux de perte, récupération et affinage.",
     keywords: [...base, 'métaux précieux', 'pertes'],
   },
   {
@@ -78,7 +80,7 @@ export const episodes = [
     shortTitle: 'Le standard du sertisseur',
     plannedDuration: '18 min',
     description:
-      "Serti griffes, grains, clos, rail, invisible : comment formaliser la « meilleure méthode connue » sans brider le geste. Fiches de geste, points clés et transmission du savoir-faire.",
+      "« Préserver, innover, partager » : c'est la mission que Cartier donne à sa Maison des Métiers d'Art. Le standard de travail est l'outil qui rend cette transmission possible, sans brider le geste du sertisseur.",
     keywords: [...base, 'standard de travail', 'sertissage'],
   },
   {
@@ -88,7 +90,7 @@ export const episodes = [
     shortTitle: "Contrôler l'éclat",
     plannedDuration: '16 min',
     description:
-      "Défauts de serti, de poli, de rhodiage : comment rendre objectif un contrôle visuel. Loupe ×10, conditions d'éclairage, échantillons limites et choix entre contrôle à 100 % et échantillonnage.",
+      "L'exigence d'une grande Maison se joue aussi au contrôle. Comment rendre objectif un jugement d'aspect : loupe ×10, conditions d'éclairage, échantillons limites, contrôle à 100 % ou par échantillonnage.",
     keywords: [...base, 'contrôle visuel', 'échantillons limites'],
   },
   {
@@ -98,7 +100,7 @@ export const episodes = [
     shortTitle: 'Management visuel & Gemba',
     plannedDuration: '14 min',
     description:
-      "Où en est la commande spéciale du client ? Tableaux d'atelier, suivi des pièces en cours et tournées terrain : voir l'état du flux d'un coup d'œil et aller là où la valeur se crée.",
+      "Respect, curiosité, générosité : les valeurs que Cartier met en avant dans sa culture prennent corps au Gemba. Management visuel et tournées terrain pour aller voir, écouter et comprendre là où la valeur se crée.",
     keywords: [...base, 'management visuel', 'gemba'],
   },
   {
@@ -108,7 +110,7 @@ export const episodes = [
     shortTitle: 'La pierre qui tombe',
     plannedDuration: '19 min',
     description:
-      "Une cliente rapporte une bague : il manque un diamant. 5 Pourquoi, Ishikawa et démarche 8D pour remonter jusqu'à la cause racine plutôt que de simplement resertir.",
+      "Une cliente rapporte une bague : il manque un diamant. Être à la hauteur de la confiance accordée à une grande Maison, c'est remonter à la cause racine plutôt que de simplement resertir : 5 Pourquoi, Ishikawa et démarche 8D.",
     keywords: [...base, 'résolution de problème', '5 pourquoi'],
   },
   {
@@ -118,7 +120,7 @@ export const episodes = [
     shortTitle: 'AMDEC procédés',
     plannedDuration: '17 min',
     description:
-      "Porosités en fonte à cire perdue, soudure laser fragile, rhodiage qui s'use : anticiper les défaillances avant qu'elles n'atteignent le client grâce à l'AMDEC procédé.",
+      "Protéger l'excellence avant qu'elle ne soit menacée : porosités en fonte, soudure laser fragile, rhodiage qui s'use. L'AMDEC procédé pour anticiper les défaillances avant qu'elles n'atteignent la cliente.",
     keywords: [...base, 'AMDEC', 'fonte'],
   },
   {
@@ -128,7 +130,7 @@ export const episodes = [
     shortTitle: 'Traçabilité & éthique',
     plannedDuration: '16 min',
     description:
-      "Responsible Jewellery Council, Processus de Kimberley, diamants de synthèse et chaîne de garantie : en joaillerie, la confiance du client est une caractéristique qualité à part entière.",
+      "Approvisionnement responsable, pierres naturelles uniquement dans ses collections, Watch & Jewellery Initiative 2030 lancée en 2021 : les engagements publics de Cartier font de la traçabilité une exigence qualité à part entière.",
     keywords: [...base, 'traçabilité', 'RJC'],
   },
   {
@@ -138,7 +140,7 @@ export const episodes = [
     shortTitle: 'Joaillerie 4.0',
     plannedDuration: '17 min',
     description:
-      "CAO, impression 3D de cires, inspection des pierres par vision artificielle, données d'atelier : comment le numérique démultiplie le savoir-faire sans remplacer la main de l'artisan.",
+      "Cartier associe volontiers innovation et savoir-faire. CAO, impression 3D de cires, inspection assistée par vision artificielle : comment le numérique démultiplie le geste de l'artisan sans le remplacer.",
     keywords: [...base, 'IA', 'industrie 4.0'],
   },
 ];

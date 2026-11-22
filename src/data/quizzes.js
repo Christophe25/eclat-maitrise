@@ -303,15 +303,15 @@ export const quizzes = {
       explanation: 'Lancé en 2003, il encadre le commerce international des diamants bruts pour exclure les « diamants de conflit ».',
     },
     {
-      question: 'Le RJC (Responsible Jewellery Council) propose notamment…',
+      question: 'Quelle initiative collective Cartier a-t-elle lancée en 2021 avec Kering ?',
       options: [
-        'Une norme de pratiques responsables et une certification de chaîne de traçabilité',
-        'Une école de sertissage',
-        'Un poinçon officiel suisse',
-        'Une bourse des métaux',
+        'Le Processus de Kimberley',
+        'La Watch & Jewellery Initiative 2030',
+        'Le Code of Practices du RJC',
+        'Le poinçon de Maître',
       ],
-      correctAnswer: 0,
-      explanation: 'Le Code of Practices et la certification Chain of Custody sont ses deux référentiels principaux.',
+      correctAnswer: 1,
+      explanation: 'Lancée en 2021, elle réunit des acteurs de l’horlogerie et de la joaillerie autour d’objectifs de durabilité, avec un engagement de transparence et de transmission des savoir-faire.',
     },
     {
       question: 'Pourquoi la détection des diamants de synthèse est-elle un enjeu qualité ?',
@@ -322,7 +322,7 @@ export const quizzes = {
         'Parce qu’ils sont plus lourds',
       ],
       correctAnswer: 1,
-      explanation: 'Le produit doit correspondre à ce qui est déclaré : c’est une exigence de conformité et de confiance.',
+      explanation: 'Le produit doit correspondre à ce qui est déclaré : c’est une exigence de conformité et de confiance. Cartier indique d’ailleurs exclure les matériaux synthétiques de ses collections de bijoux.',
     },
   ],
   'ep-12': [
