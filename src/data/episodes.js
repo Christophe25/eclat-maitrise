@@ -19,14 +19,13 @@ export const episodes = [
   {
     id: 'ep-1',
     episodeNumber: 1,
-    title: "Épisode 1 – L'héritage joaillier",
-    shortTitle: "L'héritage joaillier",
-    cardTitle: 'Joaillerie &\nLean management',
+    title: "Épisode 1 – L'héritage : un style, une exigence",
+    shortTitle: "L'héritage",
     image: '/infographics/ep-1.jpg',
-    plannedDuration: '14 min',
+    plannedDuration: '15 min',
     description:
-      "De l'orfèvre de la Renaissance aux grandes maisons de haute joaillerie : comment une exigence de précision au centième de carat a façonné une culture du zéro défaut, terrain naturel pour l'excellence opérationnelle.",
-    keywords: [...base, 'savoir-faire', 'histoire'],
+      "Panthère, Trinity, Tutti Frutti, LOVE, Juste un Clou : des signatures reconnaissables entre toutes. Une signature durable suppose l'audace créative et une exécution identique, décennie après décennie : c'est le terrain de l'excellence opérationnelle.",
+    keywords: [...base, 'héritage', 'signatures'],
   },
   {
     id: 'ep-2',

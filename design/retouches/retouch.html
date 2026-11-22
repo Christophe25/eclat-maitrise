@@ -406,7 +406,7 @@ if (new URLSearchParams(location.search).has('hero')) document.getElementById('h
   const ctx = canvas.getContext('2d', { willReadFrequently: true });
   ctx.drawImage(img, 0, 0);
   if (EP === 2) fixEpisode2Carnet(ctx);
-  if (EP === 1) fixEpisode1(ctx);
+  // ép. 1 : la version « Cartier joaillerie » (L'HÉRITAGE) est publiée telle quelle
   if (EP === 3) fixEpisode3Carnet(ctx);
   if (EP === 5) fixEpisode5(ctx);
   eraseAll(ctx, ERASE[EP] || []);
