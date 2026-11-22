@@ -19,12 +19,10 @@ const EP = Number(new URLSearchParams(location.search).get('ep'));
 
 // Zones à effacer [x0, y0, x1, y1] (coordonnées de l'original 2048 px)
 const ERASE = {
-  4: [[400, 70, 1650, 250], [178, 236, 1870, 334], [560, 320, 1510, 421, 'top'], [735, 421, 1315, 496, 'top']],
 };
 
 // Thème réécrit en haut, en taille de titre : lignes, centres verticaux, largeur max
 const TITLE = {
-  4: { lines: ['LE 5S À L’ÉTABLI'], y: [185], maxWidth: 1220, maxSize: 132 },
 };
 
 const lum = (r, g, b) => 0.2126 * r + 0.7152 * g + 0.0722 * b;
