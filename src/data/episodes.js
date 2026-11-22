@@ -76,12 +76,13 @@ export const episodes = [
   {
     id: 'ep-6',
     episodeNumber: 6,
-    title: 'Épisode 6 – Le standard du sertisseur',
-    shortTitle: 'Le standard du sertisseur',
-    plannedDuration: '18 min',
+    title: "Épisode 6 – L'icône à l'identique : la qualité répétable",
+    shortTitle: "L'icône à l'identique",
+    image: '/infographics/ep-6.jpg',
+    plannedDuration: '15 min',
     description:
-      "« Préserver, innover, partager » : c'est la mission que Cartier donne à sa Maison des Métiers d'Art. Le standard de travail est l'outil qui rend cette transmission possible, sans brider le geste du sertisseur.",
-    keywords: [...base, 'standard de travail', 'sertissage'],
+      "Le bracelet LOVE (1969) ou Juste un Clou (début des années 1970) se reconnaissent au premier regard : chaque pièce doit être parfaitement identique. Caractéristiques critiques, maîtrise du procédé, échantillon limite, loupe ×10 : comment rendre la qualité répétable.",
+    keywords: [...base, 'qualité répétable', 'contrôle'],
   },
   {
     id: 'ep-7',

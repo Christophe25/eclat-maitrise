@@ -320,6 +320,20 @@ function fixEpisode5Joaillerie(ctx) {
   softenDecor(ctx);
 }
 
+function fixEpisode6(ctx) {
+  // « repétable » → « répétable » : accent aigu ajouté sur le premier « e », copié du second (même encre, même pente)
+  // teinte = moyenne de l'encre du second accent (pixels sombres), pas le pixel le plus noir
+  const px = ctx.getImageData(1268, 452, 16, 24).data; let r = 0, g = 0, b = 0, n = 0;
+  for (let i = 0; i < px.length; i += 4) if (lum(px[i], px[i + 1], px[i + 2]) < 95) { r += px[i]; g += px[i + 1]; b += px[i + 2]; n++; }
+  ctx.save();
+  ctx.strokeStyle = `rgb(${r / n | 0},${g / n | 0},${b / n | 0})`; ctx.lineCap = 'round';
+  ctx.beginPath(); ctx.moveTo(1209, 478); ctx.quadraticCurveTo(1213, 467, 1219, 457);
+  ctx.lineWidth = 5.5; ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(1212, 471); ctx.lineTo(1218, 459); ctx.lineWidth = 6.5; ctx.stroke();
+  ctx.restore();
+  softenDecor(ctx);
+}
+
 function fixEpisode12(ctx) {
   // Médaillon en bas à gauche (pastille « 3 », libellé « 2 · ASSISTER ») : doublon → effacé
   eraseAll(ctx, [{ poly: [[585, 1205], [680, 1170], [792, 1170], [818, 1194], [902, 1214], [904, 1440], [880, 1478],
@@ -430,6 +444,7 @@ if (new URLSearchParams(location.search).has('hero')) document.getElementById('h
   // ép. 1 : la version « Cartier joaillerie » (L'HÉRITAGE) est publiée telle quelle
   if (EP === 3) fixEpisode3Carnet(ctx);
   if (EP === 5) fixEpisode5Joaillerie(ctx); // ancienne version « carnet bilan matière » : fixEpisode5
+  if (EP === 6) fixEpisode6(ctx);
   if (EP === 12) fixEpisode12(ctx);
   eraseAll(ctx, ERASE[EP] || []);
   if (TITLE[EP]) drawTitle(ctx, TITLE[EP]);
