@@ -136,12 +136,14 @@ export const episodes = [
   {
     id: 'ep-12',
     episodeNumber: 12,
-    title: 'Épisode 12 – Joaillerie 4.0 : l’IA au service de la main',
-    shortTitle: 'Joaillerie 4.0',
-    plannedDuration: '17 min',
+    title: "Épisode 12 – L'IA et le savoir-faire : l'intelligence au service du geste",
+    shortTitle: "L'IA et le savoir-faire",
+    cardTitle: "L'IA et le\nsavoir-faire",
+    image: '/infographics/ep-12.jpg',
+    plannedDuration: '15 min',
     description:
-      "Cartier associe volontiers innovation et savoir-faire. CAO, impression 3D de cires, inspection assistée par vision artificielle : comment le numérique démultiplie le geste de l'artisan sans le remplacer.",
-    keywords: [...base, 'IA', 'industrie 4.0'],
+      "Cartier indique associer artisans et ingénieurs, savoir-faire traditionnel et innovations numériques. Anticiper, assister, apprendre : comment l'intelligence artificielle peut démultiplier le geste de l'artisan sans le remplacer, à condition de reposer sur des processus stables.",
+    keywords: [...base, 'IA', 'savoir-faire'],
   },
 ];
 
