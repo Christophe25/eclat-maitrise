@@ -10,7 +10,7 @@ FICHE SOURCE – Cartier joaillerie : faits publics
 
 Cadre : « L'Éclat Maîtrisé » est un travail d'analyse personnel de Christophe Fournier, qualiticien, sur l'univers de la haute joaillerie. Il n'est pas affilié à Cartier.
 
-Règles pour les animateurs : ne citer de Cartier que les faits de cette fiche, en précisant leur origine (« Cartier indique… », « selon Sotheby's… ») ; ne jamais affirmer comment Cartier organise ses ateliers ni donner de chiffres internes ; parler de « ce que cela implique dans un atelier de haute joaillerie de ce niveau » ; tout exemple chiffré est fictif ; ne pas parler de candidature ni de recrutement.
+Règles pour les animateurs : ne citer de Cartier que les faits de cette fiche, en précisant leur origine (« Cartier indique… », « selon Sotheby's… ») ; ne jamais affirmer comment Cartier organise ses ateliers ni donner de chiffres internes ; ne jamais dire que Cartier applique le Lean ou telle méthode : parler de « ce que l'excellence opérationnelle peut apporter à un atelier de haute joaillerie de ce niveau » ; parler de « ce que cela implique dans un atelier de haute joaillerie de ce niveau » ; tout exemple chiffré est fictif ; ne pas parler de candidature ni de recrutement.
 
 Ce que Cartier indique sur son site :
 - Les ateliers de Haute Joaillerie sont à Paris, berceau de la Maison. Cartier se présente comme l'une des seules Maisons à réunir tous les métiers sous un même toit : experts en pierres, dessinateurs, sertisseurs, polisseurs…
