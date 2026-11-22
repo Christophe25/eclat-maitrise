@@ -301,20 +301,30 @@ function fixEpisode3Carnet(ctx) {
     [1160, 1346], [1128, 1324], [1096, 1292], [1080, 1254]] }], { cap: false, lightBorder: true });
 }
 
-function fixEpisode12(ctx) {
-  // Médaillon en bas à gauche (pastille « 3 », libellé « 2 · ASSISTER ») : doublon → effacé
-  eraseAll(ctx, [{ poly: [[585, 1205], [680, 1170], [792, 1170], [818, 1194], [902, 1214], [904, 1440], [880, 1478],
-    [862, 1506], [700, 1512], [640, 1500], [612, 1462], [585, 1440]] }], { cap: false, lightBorder: 120 });
-  // Pixellisation de Gemini : léger flou de profondeur hors du carnet (décor, établi, outils)
+// Pixellisation de Gemini : léger flou de profondeur hors du carnet (décor, établi, outils)
+function softenDecor(ctx, quad = [[342, 396], [1938, 222], [2178, 1470], [546, 1728]]) {
   const W = ctx.canvas.width, H = ctx.canvas.height;
   const soft = document.createElement('canvas'); soft.width = W; soft.height = H;
   const sc = soft.getContext('2d'); sc.filter = 'blur(2.5px)'; sc.drawImage(ctx.canvas, 0, 0);
   ctx.save();
   ctx.beginPath(); ctx.rect(0, 0, W, H);
-  [[342, 396], [1938, 222], [2178, 1470], [546, 1728]].forEach(([x, y], i) => i ? ctx.lineTo(x, y) : ctx.moveTo(x, y));
+  quad.forEach(([x, y], i) => i ? ctx.lineTo(x, y) : ctx.moveTo(x, y));
   ctx.closePath(); ctx.clip('evenodd');
   ctx.drawImage(soft, 0, 0);
   ctx.restore();
+}
+
+function fixEpisode5Joaillerie(ctx) {
+  // 5e médaillon sans libellé (pastille « 3 » en doublon) en haut à droite : effacé
+  eraseAll(ctx, [{ poly: [[1652, 712], [1932, 712], [1932, 950], [1652, 950]] }], { cap: false, lightBorder: 120 });
+  softenDecor(ctx);
+}
+
+function fixEpisode12(ctx) {
+  // Médaillon en bas à gauche (pastille « 3 », libellé « 2 · ASSISTER ») : doublon → effacé
+  eraseAll(ctx, [{ poly: [[585, 1205], [680, 1170], [792, 1170], [818, 1194], [902, 1214], [904, 1440], [880, 1478],
+    [862, 1506], [700, 1512], [640, 1500], [612, 1462], [585, 1440]] }], { cap: false, lightBorder: 120 });
+  softenDecor(ctx);
 }
 
 function fixEpisode5(ctx) {
@@ -419,7 +429,7 @@ if (new URLSearchParams(location.search).has('hero')) document.getElementById('h
   if (EP === 2) fixEpisode2Carnet(ctx);
   // ép. 1 : la version « Cartier joaillerie » (L'HÉRITAGE) est publiée telle quelle
   if (EP === 3) fixEpisode3Carnet(ctx);
-  if (EP === 5) fixEpisode5(ctx);
+  if (EP === 5) fixEpisode5Joaillerie(ctx); // ancienne version « carnet bilan matière » : fixEpisode5
   if (EP === 12) fixEpisode12(ctx);
   eraseAll(ctx, ERASE[EP] || []);
   if (TITLE[EP]) drawTitle(ctx, TITLE[EP]);

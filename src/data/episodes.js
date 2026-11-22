@@ -65,13 +65,13 @@ export const episodes = [
   {
     id: 'ep-5',
     episodeNumber: 5,
-    title: 'Épisode 5 – Le bilan matière : chaque gramme compte',
-    shortTitle: 'Le bilan matière',
+    title: 'Épisode 5 – Transmettre le geste : préserver, innover, partager',
+    shortTitle: 'Transmettre le geste',
     image: '/infographics/ep-5.jpg',
-    plannedDuration: '17 min',
+    plannedDuration: '15 min',
     description:
-      "Le respect de la matière fait partie des engagements publics de Cartier, de l'approvisionnement responsable à l'exclusion des matériaux synthétiques. À l'atelier, ce respect commence sur la balance : bilan matière, poids fin, taux de perte, récupération et affinage.",
-    keywords: [...base, 'métaux précieux', 'pertes'],
+      "Cartier indique avoir créé en 2002 son Institut de Joaillerie pour la formation continue de ses collaborateurs, et préserver des métiers rares comme la glyptique. Le standard de travail rend cette transmission possible sans figer le geste : meilleure méthode, points clés, formation au poste, amélioration.",
+    keywords: [...base, 'transmission', 'standard de travail'],
   },
   {
     id: 'ep-6',
