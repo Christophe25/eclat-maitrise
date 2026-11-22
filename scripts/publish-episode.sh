@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Publie un épisode audio sur le VPS et l'enregistre dans src/data/audio.json.
 # Usage : npm run publish -- ep-2 audio/ep-02-excellence.m4a [AAAA-MM-JJ]
+# L'URL reçoit ?v=<horodatage> : un épisode republié n'est pas servi depuis le cache des navigateurs.
 set -euo pipefail
 ID="$1"; FILE="$2"; DATE="${3:-$(date +%F)}"
 HOST="root@srv1298063.hstgr.cloud"
@@ -22,7 +23,7 @@ const [id, url, dur, date] = process.argv.slice(1);
 const data = JSON.parse(fs.readFileSync(p, "utf8"));
 data[id] = { ...(data[id] || {}), audioUrl: url, duration: dur, date };
 fs.writeFileSync(p, JSON.stringify(data, null, 2) + "\n");
-' "$ID" "$BASE_URL/$NAME" "$MIN min" "$DATE"
+' "$ID" "$BASE_URL/$NAME?v=$(date +%s)" "$MIN min" "$DATE"
 
 echo "✅ $ID publié : $BASE_URL/$NAME ($MIN min)"
 echo "   → git add -A && git commit -m \"publie $ID\" && git push"
