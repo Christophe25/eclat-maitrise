@@ -98,12 +98,13 @@ export const episodes = [
   {
     id: 'ep-8',
     episodeNumber: 8,
-    title: 'Épisode 8 – Management visuel et Gemba',
-    shortTitle: 'Management visuel & Gemba',
-    plannedDuration: '14 min',
+    title: 'Épisode 8 – Le Gemba : respect, curiosité, générosité',
+    shortTitle: 'Le Gemba',
+    image: '/infographics/ep-8.jpg',
+    plannedDuration: '15 min',
     description:
-      "Respect, curiosité, générosité : les valeurs que Cartier met en avant dans sa culture prennent corps au Gemba. Management visuel et tournées terrain pour aller voir, écouter et comprendre là où la valeur se crée.",
-    keywords: [...base, 'management visuel', 'gemba'],
+      "Respect, curiosité, générosité : les valeurs que Cartier met en avant dans sa culture prennent corps sur le terrain. Le Gemba pour aller voir, écouter et comprendre là où la valeur se crée, et le management visuel pour distinguer le normal de l'anormal en un coup d'œil.",
+    keywords: [...base, 'gemba', 'management visuel'],
   },
   {
     id: 'ep-9',
