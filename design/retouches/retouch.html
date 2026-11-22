@@ -282,14 +282,9 @@ function fixEpisode1(ctx) {
 }
 
 function fixEpisode2Carnet(ctx) {
-  // Thème « carnet » : on retire « L'ÉCLAT MAÎTRISÉ » et « ÉPISODE 2 : » (on garde « L'EXCELLENCE OPÉRATIONNELLE »)
-  eraseAll(ctx, [{ poly: [
-    [698, 405], [780, 372], [1000, 358], [1200, 338], [1280, 320], [1480, 308], [1582, 308],
-    [1582, 393], [1520, 394], [1470, 401], [1440, 403], [1370, 409], [1290, 419], [1255, 430],
-    [1200, 432], [1145, 445], [1100, 450], [1040, 455], [1000, 459], [950, 475], [860, 477],
-    [820, 480], [800, 482], [795, 486], [698, 486],
-  ] }], { cap: false, lightBorder: true });
-  eraseAll(ctx, [{ poly: [[812, 552], [840, 549], [900, 545], [1008, 532], [1008, 590], [900, 596], [812, 597]] }], { cap: false, lightBorder: true });
+  // Version « Cartier joaillerie » : le médaillon de la bague finie (arrivée du flux) portait
+  // un « 6 » en doublon avec « 6 · CONTRÔLE » : on vide sa pastille.
+  eraseAll(ctx, [[1750, 726, 1782, 761]], { cap: false, lightBorder: true });
 }
 
 function fixEpisode3Carnet(ctx) {

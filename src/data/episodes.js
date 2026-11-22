@@ -30,13 +30,14 @@ export const episodes = [
   {
     id: 'ep-2',
     episodeNumber: 2,
-    title: "Épisode 2 – Qu'est-ce que l'excellence opérationnelle en joaillerie ?",
-    shortTitle: "L'excellence opérationnelle",
+    title: 'Épisode 2 – Tous les métiers sous un même toit',
+    shortTitle: 'Tous les métiers',
+    cardTitle: 'Tous les métiers\nsous un même toit',
     image: '/infographics/ep-2.jpg',
-    plannedDuration: '16 min',
+    plannedDuration: '15 min',
     description:
-      "Pièces uniques, petites séries, matière à très forte valeur : le Lean né dans l'automobile peut-il s'appliquer à un atelier de joaillerie ? Valeur client, flux et respect du geste artisan.",
-    keywords: [...base, 'lean', 'valeur client'],
+      "Cartier indique réunir tous les métiers de la Haute Joaillerie dans ses ateliers parisiens. Ce que cette organisation implique pour l'excellence opérationnelle : la valeur pour la cliente, la chaîne de valeur d'une pièce, le flux entre métiers et la cartographie VSM.",
+    keywords: [...base, 'flux', 'VSM'],
   },
   {
     id: 'ep-3',
