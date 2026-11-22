@@ -19,14 +19,12 @@ const EP = Number(new URLSearchParams(location.search).get('ep'));
 
 // Zones à effacer [x0, y0, x1, y1] (coordonnées de l'original 2048 px)
 const ERASE = {
-  2: [[432, 88, 1622, 250], [450, 250, 1620, 320, 'top'], [850, 320, 1200, 421, 'top'], [500, 421, 1555, 496, 'top']],
   3: [[400, 70, 1650, 250], [178, 236, 1870, 334], [560, 320, 1510, 421, 'top'], [690, 421, 1360, 496, 'top']],
   4: [[400, 70, 1650, 250], [178, 236, 1870, 334], [560, 320, 1510, 421, 'top'], [735, 421, 1315, 496, 'top']],
 };
 
 // Thème réécrit en haut, en taille de titre : lignes, centres verticaux, largeur max
 const TITLE = {
-  2: { lines: ['L’EXCELLENCE', 'OPÉRATIONNELLE'], y: [175, 300], maxWidth: 1150, maxSize: 118 },
   3: { lines: ['LES 7 GASPILLAGES'], y: [185], maxWidth: 1220, maxSize: 132 },
   4: { lines: ['LE 5S À L’ÉTABLI'], y: [185], maxWidth: 1220, maxSize: 132 },
 };
@@ -72,7 +70,7 @@ function inZone(z, x, y) {
   const a = (Math.atan2(dy, dx) * 180 / Math.PI + 360) % 360;
   return r >= r0 && r <= r1 && a >= a0 && a <= a1;
 }
-function eraseAll(ctx, zones, { cap = true } = {}) {
+function eraseAll(ctx, zones, { cap = true, lightBorder = false } = {}) {
   if (!zones.length) return;
   const boxes = zones.map(zoneBox);
   const M = 24;
@@ -93,9 +91,16 @@ function eraseAll(ctx, zones, { cap = true } = {}) {
     let r = img.data[i * 4], g = img.data[i * 4 + 1], b = img.data[i * 4 + 2];
     const l = lum(r, g, b);
     if (cap && !mask[i] && l > CAP) { const f = CAP / l; r *= f; g *= f; b *= f; }
+    // fond clair : les traits sombres voisins (texte conservé) ne doivent pas « déteindre » dans la zone
+    if (lightBorder && !mask[i] && l < 170) { r = g = b = -1; }
     C[0][i] = r; C[1][i] = g; C[2][i] = b;
   }
 
+  if (lightBorder) {
+    let m0 = 0, m1 = 0, m2 = 0, mn = 0;
+    for (let i = 0; i < N; i++) if (!mask[i] && C[0][i] >= 0) { m0 += C[0][i]; m1 += C[1][i]; m2 += C[2][i]; mn++; }
+    for (let i = 0; i < N; i++) if (C[0][i] < 0) { C[0][i] = m0 / mn; C[1][i] = m1 / mn; C[2][i] = m2 / mn; }
+  }
   // 1) Grossier (cellules de 8 px) : beaucoup d'itérations pour les grandes longueurs d'onde
   const F = 8, cw = Math.ceil(w / F), ch = Math.ceil(h / F), CN = cw * ch;
   const cknown = new Uint8Array(CN), cv = [new Float32Array(CN), new Float32Array(CN), new Float32Array(CN)];
@@ -280,6 +285,17 @@ function fixEpisode1(ctx) {
   scriptText(ctx, 'faire', 920, 1158, 40, -7);
 }
 
+function fixEpisode2Carnet(ctx) {
+  // Thème « carnet » : on retire « L'ÉCLAT MAÎTRISÉ » et « ÉPISODE 2 : » (on garde « L'EXCELLENCE OPÉRATIONNELLE »)
+  eraseAll(ctx, [{ poly: [
+    [698, 405], [780, 372], [1000, 358], [1200, 338], [1280, 320], [1480, 308], [1582, 308],
+    [1582, 393], [1520, 394], [1470, 401], [1440, 403], [1370, 409], [1290, 419], [1255, 430],
+    [1200, 432], [1145, 445], [1100, 450], [1040, 455], [1000, 459], [950, 475], [860, 477],
+    [820, 480], [800, 482], [795, 486], [698, 486],
+  ] }], { cap: false, lightBorder: true });
+  eraseAll(ctx, [{ poly: [[812, 552], [840, 549], [900, 545], [1008, 532], [1008, 590], [900, 596], [812, 597]] }], { cap: false, lightBorder: true });
+}
+
 function fixEpisode5(ctx) {
   // Thème « carnet » : médaillon 5 (coulée de métal) libellé « AFFINER » en double → « FONDRE »
   eraseAll(ctx, [{ poly: [[1830, 1241], [1953, 1212], [2002, 1216], [2006, 1238], [1957, 1267], [1833, 1282]] }], { cap: false });
@@ -379,7 +395,7 @@ if (new URLSearchParams(location.search).has('hero')) document.getElementById('h
   canvas.width = img.naturalWidth; canvas.height = img.naturalHeight;
   const ctx = canvas.getContext('2d', { willReadFrequently: true });
   ctx.drawImage(img, 0, 0);
-  if (EP === 2) fixEpisode2(ctx);
+  if (EP === 2) fixEpisode2Carnet(ctx);
   if (EP === 1) fixEpisode1(ctx);
   if (EP === 5) fixEpisode5(ctx);
   eraseAll(ctx, ERASE[EP] || []);
