@@ -109,12 +109,13 @@ export const episodes = [
   {
     id: 'ep-9',
     episodeNumber: 9,
-    title: 'Épisode 9 – La pierre qui tombe',
+    title: 'Épisode 9 – La pierre qui tombe : résoudre à la racine',
     shortTitle: 'La pierre qui tombe',
-    plannedDuration: '19 min',
+    image: '/infographics/ep-9.jpg',
+    plannedDuration: '15 min',
     description:
-      "Une cliente rapporte une bague : il manque un diamant. Être à la hauteur de la confiance accordée à une grande Maison, c'est remonter à la cause racine plutôt que de simplement resertir : 5 Pourquoi, Ishikawa et démarche 8D.",
-    keywords: [...base, 'résolution de problème', '5 pourquoi'],
+      "Cas fictif : une cliente rapporte une bague à laquelle il manque une pierre. Protéger la cliente, décrire le problème, chercher les causes, trouver la cause racine, corriger et standardiser : à la hauteur de la confiance accordée à une grande Maison, resertir ne suffit pas.",
+    keywords: [...base, 'résolution de problème', '8D'],
   },
   {
     id: 'ep-10',

@@ -334,6 +334,20 @@ function fixEpisode6(ctx) {
   softenDecor(ctx);
 }
 
+function fixEpisode9(ctx) {
+  // 2e « comprendre avant d'agir » (en bas, vers la bague et le bloc) : doublon → effacé avec ses deux flèches
+  const o = { cap: false, lightBorder: 120 };
+  eraseAll(ctx, [{ poly: [[1068, 1312], [1240, 1288], [1395, 1254], [1440, 1236], [1524, 1230], [1526, 1302],
+    [1400, 1324], [1240, 1347], [1068, 1364]] }], o);
+  eraseAll(ctx, [{ poly: [[1062, 1166], [1097, 1166], [1097, 1196], [1052, 1226], [1038, 1280], [1052, 1328],
+    [1074, 1346], [1054, 1352], [1018, 1302], [1020, 1238], [1048, 1190]] }], o);
+  eraseAll(ctx, [[1234, 1276, 1252, 1294]], o);                         // point d'encre résiduel
+  eraseAll(ctx, [{ poly: [[1508, 1146], [1534, 1146], [1538, 1166], [1512, 1168]] }], o); // pointe de flèche
+  eraseAll(ctx, [{ poly: [[1508, 1160], [1536, 1158], [1547, 1186], [1554, 1230], [1548, 1264], [1526, 1264],
+    [1530, 1226], [1516, 1188]] }], o);
+  softenDecor(ctx);
+}
+
 function fixEpisode12(ctx) {
   // Médaillon en bas à gauche (pastille « 3 », libellé « 2 · ASSISTER ») : doublon → effacé
   eraseAll(ctx, [{ poly: [[585, 1205], [680, 1170], [792, 1170], [818, 1194], [902, 1214], [904, 1440], [880, 1478],
@@ -446,6 +460,7 @@ if (new URLSearchParams(location.search).has('hero')) document.getElementById('h
   if (EP === 5) fixEpisode5Joaillerie(ctx); // ancienne version « carnet bilan matière » : fixEpisode5
   if (EP === 6) fixEpisode6(ctx);
   if ([7, 8, 10, 11].includes(EP)) softenDecor(ctx);
+  if (EP === 9) fixEpisode9(ctx);
   if (EP === 12) fixEpisode12(ctx);
   eraseAll(ctx, ERASE[EP] || []);
   if (TITLE[EP]) drawTitle(ctx, TITLE[EP]);
