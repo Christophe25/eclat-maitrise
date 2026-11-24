@@ -1,9 +1,17 @@
 {
   "short_name": "L'Éclat Maîtrisé",
-  "name": "L'Éclat Maîtrisé – Excellence opérationnelle dans la joaillerie",
-  "icons": [{ "src": "/favicon.svg", "type": "image/svg+xml", "sizes": "any" }],
-  "start_url": ".",
+  "name": "L'Éclat Maîtrisé – Excellence opérationnelle en haute joaillerie",
+  "description": "Podcast de Christophe Fournier : l'excellence opérationnelle dans l'univers de la haute joaillerie.",
+  "lang": "fr",
+  "start_url": "/",
+  "scope": "/",
   "display": "standalone",
-  "theme_color": "#0a0a0c",
-  "background_color": "#0a0a0c"
+  "orientation": "portrait",
+  "theme_color": "#fdfcfa",
+  "background_color": "#fdfcfa",
+  "icons": [
+    { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
 }
