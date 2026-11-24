@@ -197,27 +197,32 @@ export const quizzes = {
   ],
   'ep-8': [
     {
-      question: 'Que signifie « Gemba » ?',
-      options: ['Le bureau du directeur', 'Le lieu réel où la valeur est créée', 'Un tableau de bord', 'Une réunion hebdomadaire'],
-      correctAnswer: 1,
-      explanation: "Le Gemba, c'est l'atelier, l'établi : là où les faits se constatent.",
-    },
-    {
-      question: 'Un bon management visuel permet de…',
+      question: 'Quelles valeurs Cartier met-il en avant dans sa culture ?',
       options: [
-        "Décorer l'atelier",
-        "Voir en quelques secondes si la situation est normale ou anormale",
-        'Remplacer les réunions par des affiches',
-        'Surveiller les opérateurs',
+        'Vitesse, volume, coût',
+        'Respect, curiosité, générosité',
+        'Discipline, contrôle, sanction',
+        'Rareté, secret, distance',
       ],
       correctAnswer: 1,
-      explanation: 'Normal / anormal en un coup d’œil : c’est le test d’un visuel efficace.',
+      explanation: 'Ce sont les valeurs que la Maison affiche publiquement ; le Gemba leur donne une traduction concrète sur le terrain.',
     },
     {
-      question: 'Lors d’une tournée Gemba, le manager doit surtout…',
-      options: ['Donner des ordres', 'Observer, questionner et écouter', 'Contrôler les pointages', 'Faire le travail à la place des équipes'],
+      question: 'Que signifie « Gemba » ?',
+      options: ['Le bureau du directeur', 'Le lieu réel où la valeur est créée', 'Un tableau de bord', 'Une réunion mensuelle'],
       correctAnswer: 1,
-      explanation: 'Le Gemba est une démarche de compréhension et de respect, pas d’inspection.',
+      explanation: 'Le Gemba, c’est l’établi, l’atelier : là où les faits se constatent.',
+    },
+    {
+      question: 'À quoi reconnaît-on un management visuel efficace ?',
+      options: [
+        'Il décore l’atelier',
+        'On voit en un coup d’œil si la situation est normale ou anormale',
+        'Il remplace toutes les réunions',
+        'Il sert à surveiller les personnes',
+      ],
+      correctAnswer: 1,
+      explanation: 'Normal ou anormal en quelques secondes : c’est le test d’un visuel utile.',
     },
   ],
   'ep-9': [
