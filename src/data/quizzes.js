@@ -227,37 +227,27 @@ export const quizzes = {
   ],
   'ep-9': [
     {
-      question: 'Resertir la pierre manquante et rendre la bague, c’est…',
+      question: 'Une cliente rapporte une bague à laquelle il manque une pierre. Quelle est la toute première étape ?',
+      options: ['Chercher un coupable', 'Protéger la cliente', 'Rédiger la procédure', 'Lancer une AMDEC'],
+      correctAnswer: 1,
+      explanation: 'On commence par protéger la cliente (et les autres pièces concernées), avant d’analyser.',
+    },
+    {
+      question: 'Resertir la pierre et rendre la bague, c’est…',
       options: [
-        'Une action corrective sur la cause racine',
-        'Une action curative (traitement du symptôme)',
+        'Traiter la cause racine',
+        'Traiter le symptôme (action curative)',
         'Une action préventive',
-        'Une analyse AMDEC',
+        'Une standardisation',
       ],
       correctAnswer: 1,
-      explanation: 'Le client est servi, mais la cause du desserrage n’est pas traitée : le problème reviendra.',
+      explanation: 'La cliente est servie, mais sans comprendre pourquoi la pierre est tombée, le problème reviendra.',
     },
     {
-      question: 'Les 6 familles classiques du diagramme d’Ishikawa (6M) sont…',
-      options: [
-        'Main-d’œuvre, Matière, Méthode, Milieu, Machine, Mesure',
-        'Marketing, Management, Marge, Marché, Mode, Modèle',
-        'Métal, Moule, Meule, Mandrin, Marteau, Microscope',
-        'Mois, Minute, Moment, Mesure, Milieu, Mode',
-      ],
-      correctAnswer: 0,
-      explanation: 'Les 6M structurent la recherche de causes possibles avant de vérifier les faits.',
-    },
-    {
-      question: 'Dans la démarche 8D, que fait-on en D3 ?',
-      options: [
-        'On constitue l’équipe',
-        'On met en place des actions de confinement immédiates',
-        'On félicite l’équipe',
-        'On clôture le dossier',
-      ],
+      question: 'Quel outil aide à remonter à la cause racine en questionnant successivement ?',
+      options: ['Le 5S', 'Les 5 Pourquoi', 'Le SMED', 'Le Kanban'],
       correctAnswer: 1,
-      explanation: 'D3 protège le client (tri, blocage des stocks) pendant que l’analyse se poursuit.',
+      explanation: 'On demande « pourquoi ? » jusqu’à trouver une cause sur laquelle agir durablement.',
     },
   ],
   'ep-10': [
