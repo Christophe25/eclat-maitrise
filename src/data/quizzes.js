@@ -317,37 +317,32 @@ export const quizzes = {
   ],
   'ep-12': [
     {
-      question: 'Quel apport de l’impression 3D en joaillerie ?',
-      options: [
-        'Elle remplace le sertissage',
-        'Elle produit des modèles en cire ou résine directement depuis la CAO pour la fonte',
-        'Elle polit les pièces',
-        'Elle supprime le contrôle qualité',
-      ],
+      question: 'Quelle mission Cartier donne-t-il à sa Maison des Métiers d’Art ?',
+      options: ['Produire, vendre, exporter', 'Préserver, innover, partager', 'Mesurer, contrôler, sanctionner', 'Copier, adapter, réduire'],
       correctAnswer: 1,
-      explanation: 'Les modèles imprimés alimentent la fonte à cire perdue et raccourcissent le développement.',
+      explanation: 'Une mission qui résume aussi la promesse de l’excellence opérationnelle au service du geste.',
     },
     {
-      question: 'La vision artificielle à l’atelier sert principalement à…',
+      question: 'Quel rôle donner à l’intelligence artificielle dans un atelier de haute joaillerie ?',
       options: [
         'Remplacer l’artisan',
-        'Assister l’inspection de manière répétable et tracer les résultats',
-        'Fixer les prix',
-        'Concevoir les collections',
+        'Anticiper, assister le contrôle et capitaliser le savoir-faire, au service du geste',
+        'Supprimer les contrôles',
+        'Choisir seule les créations',
       ],
       correctAnswer: 1,
-      explanation: 'L’IA renforce la répétabilité du contrôle ; la décision et le geste restent humains.',
+      explanation: 'L’IA démultiplie le geste sans le remplacer : la décision et la main restent humaines.',
     },
     {
-      question: 'Quel prérequis avant de digitaliser un processus ?',
+      question: 'Quel prérequis avant de numériser un processus ?',
       options: [
         'Acheter le logiciel le plus complet',
         'Avoir un processus stable et standardisé',
-        'Supprimer les standards papier sans les remplacer',
+        'Supprimer les standards existants',
         'Former uniquement la direction',
       ],
       correctAnswer: 1,
-      explanation: 'Digitaliser un processus instable revient à automatiser le désordre.',
+      explanation: 'Numériser un processus instable, c’est automatiser le désordre.',
     },
   ],
   'bonus-qrqc': [
