@@ -282,37 +282,37 @@ export const quizzes = {
   ],
   'ep-11': [
     {
+      question: 'Que Cartier indique-t-il au sujet de ses fournisseurs d’or ?',
+      options: [
+        'Ils sont choisis uniquement sur le prix',
+        'Ils se sont engagés par écrit à un approvisionnement responsable',
+        'Ils changent à chaque collection',
+        'La Maison n’en a pas',
+      ],
+      correctAnswer: 1,
+      explanation: 'La Maison met aussi en avant des relations de long terme avec des fournisseurs qui partagent ses valeurs.',
+    },
+    {
       question: 'Quel est l’objet du Processus de Kimberley ?',
       options: [
-        'Certifier la taille des diamants',
-        'Empêcher le commerce des diamants bruts finançant des conflits',
-        'Fixer le prix des diamants',
         'Classer la couleur des diamants',
+        'Empêcher le commerce des diamants bruts finançant des conflits',
+        'Fixer le prix de l’or',
+        'Certifier les sertisseurs',
       ],
       correctAnswer: 1,
-      explanation: 'Lancé en 2003, il encadre le commerce international des diamants bruts pour exclure les « diamants de conflit ».',
+      explanation: 'Lancé en 2003, il encadre le commerce international des diamants bruts.',
     },
     {
-      question: 'Quelle initiative collective Cartier a-t-elle lancée en 2021 avec Kering ?',
+      question: 'Pourquoi dit-on que la qualité commence chez le fournisseur ?',
       options: [
-        'Le Processus de Kimberley',
-        'La Watch & Jewellery Initiative 2030',
-        'Le Code of Practices du RJC',
-        'Le poinçon de Maître',
+        'Parce que l’atelier ne contrôle rien',
+        'Parce qu’une matière non conforme ou non tracée compromet la pièce et la confiance, quoi que fasse l’atelier',
+        'Parce que les fournisseurs font le sertissage',
+        'Parce que c’est moins cher',
       ],
       correctAnswer: 1,
-      explanation: 'Lancée en 2021, elle réunit des acteurs de l’horlogerie et de la joaillerie autour d’objectifs de durabilité, avec un engagement de transparence et de transmission des savoir-faire.',
-    },
-    {
-      question: 'Pourquoi la détection des diamants de synthèse est-elle un enjeu qualité ?',
-      options: [
-        'Parce qu’ils sont plus fragiles',
-        'Parce qu’une confusion non déclarée trompe le client sur la nature du produit',
-        'Parce qu’ils sont interdits',
-        'Parce qu’ils sont plus lourds',
-      ],
-      correctAnswer: 1,
-      explanation: 'Le produit doit correspondre à ce qui est déclaré : c’est une exigence de conformité et de confiance. Cartier indique d’ailleurs exclure les matériaux synthétiques de ses collections de bijoux.',
+      explanation: 'Origine, certification et traçabilité conditionnent la conformité de la pièce finie.',
     },
   ],
   'ep-12': [
